@@ -20,5 +20,4 @@ android {
 
 dependencies {
 	implementation 'com.android.support:design:25.1.1'
-	implementation 'cat.ereza:customactivityoncrash:1.5.0'
 }
