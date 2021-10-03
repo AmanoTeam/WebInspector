@@ -1,10 +1,10 @@
 package ai.agusibrahim.xhrlog;
 
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.os.Bundle;
 import android.view.*;
-import android.support.design.widget.NavigationView;
+import com.google.android.material.navigation.NavigationView;
 import android.os.Build;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -17,15 +17,15 @@ import android.widget.ListView;
 import java.util.*;
 import android.widget.ArrayAdapter;
 import android.webkit.WebResourceResponse;
-import android.support.v7.widget.SearchView;
+import androidx.appcompat.widget.SearchView;
 import android.widget.Toast;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AlertDialog;
+import androidx.core.view.MenuItemCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.AlertDialog;
 import android.content.DialogInterface;
 import android.widget.AdapterView;
 import android.widget.*;
-import android.support.design.widget.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import android.webkit.WebChromeClient;
 import java.util.concurrent.*;
 

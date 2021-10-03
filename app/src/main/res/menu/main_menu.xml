@@ -5,7 +5,7 @@
 		android:title="Goto"
 		android:icon="@drawable/ic_chevron_right"
 		app:showAsAction="always|collapseActionView"
-		app:actionViewClass="android.support.v7.widget.SearchView"
+		app:actionViewClass="androidx.appcompat.widget.SearchView"
 	/>
 	<item
 		android:id="@+id/menu_clear"

@@ -19,5 +19,9 @@ android {
 }
 
 dependencies {
-	implementation 'com.android.support:design:25.1.1'
+    implementation 'androidx.appcompat:appcompat:1.4.0-alpha03'
+    implementation 'androidx.core:core:1.7.0-beta01'
+	implementation 'androidx.drawerlayout:drawerlayout:1.1.1'
+	implementation 'androidx.coordinatorlayout:coordinatorlayout:1.1.0'
+	implementation 'com.google.android.material:material:1.5.0-alpha04'
 }
