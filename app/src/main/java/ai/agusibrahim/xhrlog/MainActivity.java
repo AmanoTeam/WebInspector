@@ -10,16 +10,16 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.graphics.*;
 import android.webkit.JavascriptInterface;
-import android.widget.TextView;
-import android.widget.EditText;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.AppCompatEditText;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ListView;
 import java.util.*;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.webkit.WebResourceResponse;
 import androidx.appcompat.widget.SearchView;
 import android.widget.Toast;
-import androidx.core.view.MenuItemCompat;
+import android.view.MenuItem;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AlertDialog;
 import android.content.DialogInterface;
@@ -30,273 +30,306 @@ import android.webkit.WebChromeClient;
 import java.util.concurrent.*;
 
 public class MainActivity extends AppCompatActivity {
-	private Toolbar toolbar;
-	private TextView loggr;
-	private EditText jsinput;
-	private ListView netw;
-	private NavigationView xhrslide, netlogslide;
-	private List<String> netdata=new ArrayList<String>();
-	private WebView web;
-	private ArrayAdapter<String> adapter;
-	private SearchView urlView;
-	private DrawerLayout drawr;
-	private MenuItem clearmenu;
-	private View homs;
+	
+	private AppCompatTextView xhrLogs;
+	
+	private NavigationView xhrNavigationView;
+	private NavigationView networkLogsNavigationView;
+	
+	private List<String> networkLogs = new ArrayList<String>();
+	
+	private WebView webView;
+	
+	private ArrayAdapter<String> arrayAdapter;
+	
+	private SearchView urlInputView;
+	
+	private DrawerLayout mainDrawer;
+	
+	private MenuItem clearLogsButton;
+	
+	private View homeScreenView;
+	
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_activity);
-		toolbar = (Toolbar) findViewById(R.id.toolbar);
-		netw=(ListView) findViewById(R.id.mainactivityListView1);
-		jsinput=(EditText) findViewById(R.id.mainactivityEditText1);
-		loggr=(TextView) findViewById(R.id.loggr);
-		homs=findViewById(R.id.homs);
-		drawr=(DrawerLayout) findViewById(R.id.drawer_layout);
-		setSupportActionBar(toolbar);
-		netw.setAdapter(adapter=new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, netdata));
-		web=(WebView) findViewById(R.id.webv);
-		xhrslide = (NavigationView) findViewById(R.id.naView);
-		netlogslide = (NavigationView) findViewById(R.id.naView1);
-		navigationinit();
-		jsinput.setOnKeyListener(new View.OnKeyListener() {
-				public boolean onKey(View v, int keyCode, KeyEvent event) {
-					if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
-						(keyCode == KeyEvent.KEYCODE_ENTER)) {
-						String js=jsinput.getText().toString().replaceAll(";$","");
-						web.loadUrl(String.format("javascript:%s%s%s",js.startsWith("console.")?"":"console.log(", js, js.startsWith("console.")?"":");"));
+		
+		// Action bar stuff
+		final Toolbar mainToolbar = (Toolbar) findViewById(R.id.main_toolbar);
+		setSupportActionBar(mainToolbar);
+		
+		// "Network logs" stuff
+		final ListView networkLogsListView = (ListView) findViewById(R.id.networkLogsListView);
+		networkLogsListView.setAdapter(arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, networkLogs));
+		
+		networkLogsListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+				@Override
+				public boolean onItemLongClick(final AdapterView<?> adapterView, final View view, final int position, final long id) {
+					setClipboard((String) adapterView.getItemAtPosition(position));
+					Toast.makeText(getApplicationContext(), "Copied to Clipboard", Toast.LENGTH_SHORT).show();
+					adapterView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+					return true;
+				}
+			}
+		);
+		
+		networkLogsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+				@Override
+				public void onItemClick(final AdapterView<?> adapterView, final View view, final int position, final long id) {
+					webView.loadUrl((String) adapterView.getItemAtPosition(position));
+				}
+			}
+		);
+		
+		networkLogsNavigationView = (NavigationView) findViewById(R.id.networkLogsNavigationView);
+		
+		networkLogsNavigationView.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
+				@Override
+				public WindowInsets onApplyWindowInsets(final View view, final WindowInsets windowInsets) {
+					return windowInsets;
+				}
+			}
+		);
+		
+		// "JavaScript console" stuff
+		final AppCompatEditText jsConsoleInput = (AppCompatEditText) findViewById(R.id.jsConsoleInput);
+		
+		jsConsoleInput.setOnKeyListener(new View.OnKeyListener() {
+				public boolean onKey(final View view, int keyCode, final KeyEvent keyEvent) {
+					if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+						final String jsExpression = jsConsoleInput.getText().toString().replaceAll(";$","");
 						
-						jsinput.setText("");
+						webView.loadUrl(String.format("javascript:%s%s%s", jsExpression.startsWith("console.") ? "": "console.log(", jsExpression, jsExpression.startsWith("console.") ? "": ");"));
+						
+						jsConsoleInput.setText("");
 						return true;
 					}
 					return false;
 				}
-			});
-		webinit();
-		// copy url saat listview di klik
-		netw.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
+			}
+		);
+		
+		// "XML HTTP Request logs" stuff
+		xhrLogs = (AppCompatTextView) findViewById(R.id.xhrLogs);
+		
+		xhrNavigationView = (NavigationView) findViewById(R.id.xhrNavigationView);
+		
+		xhrNavigationView.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
 				@Override
-				public boolean onItemLongClick(AdapterView<?> p1, View p2, int p3, long p4) {
-					setClipboard((String)p1.getItemAtPosition(p3));
-					Toast.makeText(MainActivity.this, "Copied to Clipboard",0).show();
-					p1.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-					return true;
+				public WindowInsets onApplyWindowInsets(final View view, final WindowInsets windowInsets) {
+					return windowInsets;
 				}
-			});
-		// load url saat listview log di klik
-		netw.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+			}
+		);
+		
+		// Some layout views stuff
+		homeScreenView = findViewById(R.id.homeScreen);
+		
+		// Drawer stuff
+		mainDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+		
+		mainDrawer.setDrawerListener(new DrawerLayout.DrawerListener() {
+				
 				@Override
-				public void onItemClick(AdapterView<?> p1, View p2, int p3, long p4) {
-					web.loadUrl((String)p1.getItemAtPosition(p3));
+				public void onDrawerSlide(final View drawerView, final float slideOffset) {
+					// TODO: Implement this method
 				}
-			});
-	}
-
-	private void webinit() {
-		// atur webview agar support js
-		web.getSettings().setJavaScriptEnabled(true);
-		// agar bisa di inspect melalui chrome di pc
-		web.setWebContentsDebuggingEnabled(true);
-		// register fungsi javascript
-		web.addJavascriptInterface(new MyJavaScriptInterface(), "$$");
-		// navigation callback
-		web.setWebViewClient(new WebViewClient() {
+				
+				@Override
+				public void onDrawerOpened(final View drawerView) {
+					if (mainDrawer.isDrawerOpen(Gravity.RIGHT))
+						setTitle("XHR logs");
+					else if (mainDrawer.isDrawerOpen(Gravity.LEFT))
+						setTitle("Network logs");
+					clearLogsButton.setVisible(true);
+				}
+				
+				@Override
+				public void onDrawerClosed(final View view) {
+					setTitle(webView.getTitle().length()>1?webView.getTitle():getResources().getString(R.string.app_name));
+					clearLogsButton.setVisible(false);
+				}
+				
+				@Override
+				public void onDrawerStateChanged(final int newState) {
+					// TODO: Implement this method
+				}
+				
+			}
+		);
+		
+		// "Web View" stuff
+		webView = (WebView) findViewById(R.id.webView);
+		
+		webView.getSettings().setJavaScriptEnabled(true);
+		
+		webView.setWebContentsDebuggingEnabled(true);
+		
+		webView.addJavascriptInterface(new MyJavaScriptInterface(), "$$");
+		
+		webView.setWebViewClient(new WebViewClient() {
 				@Override
 				public void onPageStarted(WebView view, String url, Bitmap favicon) {
 					setTitle("Loading...");
 					super.onPageStarted(view, url, favicon);
 				}
+				
 				@Override
 				public WebResourceResponse shouldInterceptRequest(WebView view, final String url) {
 					// capture semua request ke listview
-					view.post(new Runnable(){
+					view.post(new Runnable() {
 							@Override
 							public void run() {
-								netdata.add(url);
-								adapter.notifyDataSetChanged();
+								networkLogs.add(url);
+								arrayAdapter.notifyDataSetChanged();
 							}
 						});
 					return super.shouldInterceptRequest(view, url);
 				}
-				// saat halaman selesai di load, inject js
+				
 				@Override
-				public void onPageFinished(WebView view, String url) {
-					setTitle(view.getTitle());
-					view.loadUrl("javascript:function injek3(){window.hasdir=1;window.dir=function(n){var r=[];for(var t in n)'function'==typeof n[t]&&r.push(t);return r}};if(window.hasdir!=1){injek3();}");
-					view.loadUrl("javascript:function injek2(){window.touchblock=0,window.dummy1=1,document.addEventListener('click',function(n){if(1==window.touchblock){n.preventDefault();n.stopPropagation();var t=document.elementFromPoint(n.clientX,n.clientY);window.ganti=function(n){t.outerHTML=n},window.gantiparent=function(n){t.parentElement.outerHTML=n},$$.print(t.parentElement.outerHTML, t.outerHTML)}},!0)}1!=window.dummy1&&injek2();");
-					view.loadUrl("javascript:function injek(){window.hasovrde=1;var e=XMLHttpRequest.prototype.open;XMLHttpRequest.prototype.open=function(ee,nn,aa){this.addEventListener('load',function(){$$.log(this.responseText, nn, JSON.stringify(arguments))}),e.apply(this,arguments)}};if(window.hasovrde!=1){injek();}");
-					super.onPageFinished(view, url);
+				public void onPageFinished(final WebView webView, final String url) {
+					setTitle(webView.getTitle());
+					
+					webView.loadUrl("javascript:function injek3() {window.hasdir = 1;window.dir = function(n) {var r = [];for(var t in n)'function' = = typeof n[t]&&r.push(t);return r}};if (window.hasdir!= 1) {injek3();}");
+					webView.loadUrl("javascript:function injek2() {window.touchblock = 0,window.dummy1 = 1,document.addEventListener('click',function(n) {if (1 = = window.touchblock) {n.preventDefault();n.stopPropagation();var t = document.elementFromPoint(n.clientX,n.clientY);window.ganti = function(n) {t.outerHTML = n},window.gantiparent = function(n) {t.parentElement.outerHTML = n},$$.print(t.parentElement.outerHTML, t.outerHTML)}},!0)}1!= window.dummy1&&injek2();");
+					webView.loadUrl("javascript:function injek() {window.hasovrde = 1;var e = XMLHttpRequest.prototype.open;XMLHttpRequest.prototype.open = function(ee,nn,aa) {this.addEventListener('load',function() {$$.log(this.responseText, nn, JSON.stringify(arguments))}),e.apply(this,arguments)}};if (window.hasovrde!= 1) {injek();}");
+					
+					super.onPageFinished(webView, url);
 				}
-			});
-		web.setWebChromeClient(new WebChromeClient(){
-			@Override
-			public boolean onConsoleMessage(android.webkit.ConsoleMessage consoleMessage) {
-				loggr.append(consoleMessage.message()+"\n--------------------\n");
-				return false;
+				
 			}
-		});
-	}
-
-	private void navigationinit() {
-		// hilangkan bayangan hitam (semacam bug atau apa, yang pasti ini mengganggu)
-		if (xhrslide != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-			xhrslide.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
-					@Override
-					public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
-						return insets;
-					}
-				});
-		}
-		if (netlogslide != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-			netlogslide.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
-					@Override
-					public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
-						return insets;
-					}
-				});
-		}
-		// drawer listener, untuk munculin menu clear log (trash icon)
-		drawr.setDrawerListener(new DrawerLayout.DrawerListener(){
+		);
+		
+		webView.setWebChromeClient(new WebChromeClient() {
 				@Override
-				public void onDrawerSlide(View p1, float p2) {
-					// TODO: Implement this method
+				public boolean onConsoleMessage(android.webkit.ConsoleMessage consoleMessage) {
+					xhrLogs.append(consoleMessage.message()+"\n--------------------\n");
+					return false;
 				}
-				@Override
-				public void onDrawerOpened(View p1) {
-					// saat drawer terbuka
-					if(drawr.isDrawerOpen(Gravity.RIGHT))
-						setTitle("XHR Logs");
-					else if(drawr.isDrawerOpen(Gravity.LEFT))
-						setTitle("Network Logs");
-					clearmenu.setVisible(true);
-				}
-				@Override
-				public void onDrawerClosed(View p1) {
-					// saat drawer ditutup
-					setTitle(web.getTitle().length()>1?web.getTitle():getResources().getString(R.string.app_name));
-					clearmenu.setVisible(false);
-				}
-				@Override
-				public void onDrawerStateChanged(int p1) {
-					// TODO: Implement this method
-				}
-			});
+			}
+		);
+	
 	}
 
 	@Override
 	public void onBackPressed() {
 		// browser bisa di back, lakukan back. jika tidak maka lakukan back pada aplikasi (keluar)
-		if(web.canGoBack()){
-			web.goBack();
-		}else{
+		if (webView.canGoBack()) {
+			webView.goBack();
+		} else {
 			super.onBackPressed();
 		}
 	}
 	
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.main_menu, menu);
-		// menu url input
-		final MenuItem urlmenu=menu.findItem(R.id.goto_url);
-		// menu clear (trash icon)
-		clearmenu=menu.findItem(R.id.menu_clear);
-		// sembunyikan menu clear
-		clearmenu.setVisible(false);
-		// menu input url sebagai SearchView
-		urlView = (SearchView) urlmenu.getActionView();
-		urlView.setQueryHint("Goto URL");
-		// saat icon > (right chevron) di klik maka set url di url input sesuai url dari webview
-		urlView.setOnSearchClickListener(new View.OnClickListener(){
+	public boolean onCreateOptionsMenu(final Menu menu) {
+		final MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.main_menu, menu);
+		
+		final MenuItem urlInput = menu.findItem(R.id.goto_url);
+		
+		// "Clear logs" button
+		clearLogsButton = menu.findItem(R.id.menu_clear);
+		clearLogsButton.setVisible(false);
+		
+		// "Go to web address" button
+		urlInputView = (SearchView) urlInput.getActionView();
+		urlInputView.setQueryHint("Goto URL");
+		
+		urlInputView.setOnSearchClickListener(new View.OnClickListener() {
 				@Override
-				public void onClick(View p1) {
-					urlView.setQuery( web.getUrl(), false);
+				public void onClick(final View view) {
+					urlInputView.setQuery(webView.getUrl(), false);
 				}
-			});
-		urlView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
+			}
+		);
+		
+		urlInputView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 				@Override
-				// saat teken enter di input url
-				public boolean onQueryTextSubmit(String urlinput) {
-					// ada validasi url menggunakan regex, agar teks yang di input benar-benar url yang valid
-					if(!urlinput.trim().matches("https?://.*")){
-						urlinput="http://"+urlinput.trim();
+				public boolean onQueryTextSubmit(final String urlTextInput) {
+					
+					if (urlTextInput.startsWith("http://") || urlTextInput.startsWith("https://")) {
+						webView.loadUrl(urlTextInput);
+						
+						urlInput.collapseActionView();
+						
+						homeScreenView.setVisibility(View.GONE);
+						webView.setVisibility(View.VISIBLE);
+					} else {
+						Toast.makeText(getApplicationContext(), "Unrecognized URI or unsupported protocol", Toast.LENGTH_SHORT).show();
 					}
-					if(android.util.Patterns.WEB_URL.matcher(urlinput).matches()){
-						web.loadUrl(urlinput);
-						MenuItemCompat.collapseActionView(urlmenu);
-						homs.setVisibility(View.GONE);
-						web.setVisibility(View.VISIBLE);
-					}else Toast.makeText(MainActivity.this, "Invalid URL",0).show();
+					
 					return false;
 				}
+				
 				@Override
 				public boolean onQueryTextChange(String p1) {
 					return false;
 				}
-			});
+				
+			}
+		);
+		
 		return super.onCreateOptionsMenu(menu);
 	}
 
 	// menu click handler
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch(item.getItemId()){
+	public boolean onOptionsItemSelected(final MenuItem item) {
+		switch (item.getItemId()) {
 			case R.id.menu_xhrlog:
-				drawr.closeDrawer(Gravity.LEFT);
-				drawr.openDrawer(Gravity.RIGHT);
-				break;
+				mainDrawer.closeDrawer(Gravity.LEFT);
+				mainDrawer.openDrawer(Gravity.RIGHT);
+				return true;
 			case R.id.menu_netlog:
-				drawr.closeDrawer(Gravity.RIGHT);
-				drawr.openDrawer(Gravity.LEFT);
-				break;
+				mainDrawer.closeDrawer(Gravity.RIGHT);
+				mainDrawer.openDrawer(Gravity.LEFT);
+				return true;
 			case R.id.menu_touchinspect:
 				// saat menu Touch Inscpector di klik, maka inject js yang sudah diatur
-				web.loadUrl("javascript:window.touchblock=!window.touchblock;setTimeout(function(){$$.blocktoggle(window.touchblock)}, 100);");
-				break;
+				webView.loadUrl("javascript:window.touchblock = !window.touchblock;setTimeout(function() {$$.blocktoggle(window.touchblock)}, 100);");
+				return true;
 			case R.id.menu_exit:
 				finish();
-				break;
+				return true;
 			case R.id.menu_clear:
-				// konfirmasi sebelum clear log
-				AlertDialog.Builder dlg=new AlertDialog.Builder(this);
-				dlg.setTitle("Clear Confirm");
-				dlg.setMessage("Clear logs?");
-				dlg.setPositiveButton("Yes", new DialogInterface.OnClickListener(){
-						@Override
-						public void onClick(DialogInterface p1, int p2) {
-							if(drawr.isDrawerOpen(Gravity.RIGHT))
-								loggr.setText("");
-							else if(drawr.isDrawerOpen(Gravity.LEFT))
-								netdata.clear();
-							adapter.notifyDataSetChanged();
-						}
-					});
-				dlg.setNegativeButton("No", null);
-				dlg.show();
-				break;
+				if (mainDrawer.isDrawerOpen(Gravity.RIGHT)) {
+					// XHR logs
+					xhrLogs.setText("");
+				} else if (mainDrawer.isDrawerOpen(Gravity.LEFT)) {
+					// Network logs
+					networkLogs.clear();
+				}
+				arrayAdapter.notifyDataSetChanged();
+				return true;
+			default:
+				return super.onOptionsItemSelected(item);
 		}
-		return super.onOptionsItemSelected(item);
 	}
 	// dialog source code view/edit
-	private void showSourceDialog(final String s, final String r){
-		View v=getLayoutInflater().inflate(R.layout.source, null);
-		final EditText ed=(EditText)v.findViewById(R.id.sourceEditText1);
+	private void showSourceDialog(final String s, final String r) {
+		View v = getLayoutInflater().inflate(R.layout.source, null);
+		final AppCompatEditText ed = (AppCompatEditText)v.findViewById(R.id.sourceEditText1);
 		ed.setText(r);
 		ed.setTag(false);
-		AlertDialog.Builder dl=new AlertDialog.Builder(this);
+		AlertDialog.Builder dl = new AlertDialog.Builder(this);
 		dl.setTitle("Source");
 		dl.setView(v);
-		dl.setPositiveButton("Save", new DialogInterface.OnClickListener(){
+		dl.setPositiveButton("Save", new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface p1, int p2) {
-					web.loadUrl("javascript:window.ganti"+((boolean)ed.getTag()?"parent":"")+"('"+ed.getText().toString()+"');");
+					webView.loadUrl("javascript:window.ganti"+((boolean)ed.getTag()?"parent":"")+"('"+ed.getText().toString()+"');");
 				}
 			});
 		dl.setNeutralButton("Parent", null);
 		dl.setNegativeButton("Close", null);
-		AlertDialog dlg=dl.show();
-		final Button prntBtn=dlg.getButton(AlertDialog.BUTTON_NEUTRAL);
-		prntBtn.setOnClickListener(new View.OnClickListener(){
+		AlertDialog dlg = dl.show();
+		final Button prntBtn = dlg.getButton(AlertDialog.BUTTON_NEUTRAL);
+		prntBtn.setOnClickListener(new View.OnClickListener() {
 				@Override
-				public void onClick(View p1) {
+				public void onClick(final View view) {
 					ed.setText((boolean)ed.getTag()?r:s);
 					prntBtn.setText((boolean)ed.getTag()?"Perent":"Inner");
 					ed.setTag(!(boolean)ed.getTag());
@@ -309,17 +342,17 @@ public class MainActivity extends AppCompatActivity {
 		@JavascriptInterface
 		@SuppressWarnings("unused")
 		public void log(final String content, final String url, final String arg) {
-			web.post(new Runnable(){
+			webView.post(new Runnable() {
 					@Override
 					public void run() {
-						loggr.append(String.format("REQ: %s\nARG: %s\nRESP: %s\n--------------------\n",url,arg, content));
+						xhrLogs.append(String.format("REQ: %s\nARG: %s\nRESP: %s\n--------------------\n",url,arg, content));
 					}
 				});
 		}
 		@JavascriptInterface
 		@SuppressWarnings("unused")
 		public void print(final String contentparent, final String content) {
-			web.post(new Runnable(){
+			webView.post(new Runnable() {
 					@Override
 					public void run() {
 						showSourceDialog(contentparent, content);
@@ -328,11 +361,11 @@ public class MainActivity extends AppCompatActivity {
 		}
 		@JavascriptInterface
 		@SuppressWarnings("unused")
-		public void blocktoggle(final String val){
-			web.post(new Runnable(){
+		public void blocktoggle(final String val) {
+			webView.post(new Runnable() {
 					@Override
 					public void run() {
-						Toast.makeText(MainActivity.this, val.matches("(1|true)")?"Touch Inspector Activated":"Touch Inspector Deactivated",1).show();
+						Toast.makeText(getApplicationContext(), val.matches("(1|true)")?"Touch Inspector Activated":"Touch Inspector Deactivated", Toast.LENGTH_SHORT).show();
 					}
 				});
 
@@ -341,7 +374,7 @@ public class MainActivity extends AppCompatActivity {
 	
 	// fungsi set clipboard utk semua versi API
 	private void setClipboard(String text) {
-		if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
+		if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
 			android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 			clipboard.setText(text);
 		} else {
@@ -351,45 +384,3 @@ public class MainActivity extends AppCompatActivity {
 		}
 	}
 }
-/*
-function injek3() {
-    window.hasdir = 1;
-    window.dir = function(n) {
-        var r = [];
-        for (var t in n) 'function' == typeof n[t] && r.push(t);
-        return r
-    }
-};
-if (window.hasdir != 1) {
-    injek3();
-}
-
-function injek2() {
-    window.touchblock = 0, window.dummy1 = 1, document.addEventListener('click', function(n) {
-        if (1 == window.touchblock) {
-            n.preventDefault();
-            n.stopPropagation();
-            var t = document.elementFromPoint(n.clientX, n.clientY);
-            window.ganti = function(n) {
-                t.outerHTML = n
-            }, window.gantiparent = function(n) {
-                t.parentElement.outerHTML = n
-            }, $$.print(t.parentElement.outerHTML, t.outerHTML)
-        }
-    }, !0)
-}
-1 != window.dummy1 && injek2();
-
-function injek() {
-    window.hasovrde = 1;
-    var e = XMLHttpRequest.prototype.open;
-    XMLHttpRequest.prototype.open = function(ee, nn, aa) {
-        this.addEventListener('load', function() {
-            $$.log(this.responseText, nn, JSON.stringify(arguments))
-        }), e.apply(this, arguments)
-    }
-};
-if (window.hasovrde != 1) {
-    injek();
-}
-*/

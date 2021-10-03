@@ -2,14 +2,14 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto">
 	<item
 		android:id="@+id/goto_url"
-		android:title="Goto"
+		android:title="Go to web address"
 		android:icon="@drawable/ic_chevron_right"
 		app:showAsAction="always|collapseActionView"
 		app:actionViewClass="androidx.appcompat.widget.SearchView"
 	/>
 	<item
 		android:id="@+id/menu_clear"
-		android:title="Clear"
+		android:title="Clear logs"
 		android:icon="@drawable/ic_trash"
 		app:showAsAction="always"
 	/>
