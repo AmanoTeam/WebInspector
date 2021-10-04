@@ -201,9 +201,9 @@ public class MainActivity extends AppCompatActivity {
 				public void onPageFinished(final WebView webView, final String url) {
 					setTitle(webView.getTitle());
 					
-					webView.loadUrl("javascript:function injek3() {window.hasdir = 1;window.dir = function(n) {var r = [];for(var t in n)'function' = = typeof n[t]&&r.push(t);return r}};if (window.hasdir!= 1) {injek3();}");
-					webView.loadUrl("javascript:function injek2() {window.touchblock = 0,window.dummy1 = 1,document.addEventListener('click',function(n) {if (1 = = window.touchblock) {n.preventDefault();n.stopPropagation();var t = document.elementFromPoint(n.clientX,n.clientY);window.ganti = function(n) {t.outerHTML = n},window.gantiparent = function(n) {t.parentElement.outerHTML = n},jsInterface.print(t.parentElement.outerHTML, t.outerHTML)}},!0)}1!= window.dummy1&&injek2();");
-					webView.loadUrl("javascript:function injek() {window.hasovrde = 1;var e = XMLHttpRequest.prototype.open;XMLHttpRequest.prototype.open = function(ee,nn,aa) {this.addEventListener('load',function() {jsInterface.log(this.responseText, nn, JSON.stringify(arguments))}),e.apply(this,arguments)}};if (window.hasovrde!= 1) {injek();}");
+					webView.loadUrl("javascript:function injek3(){window.hasdir=1;window.dir=function(n){var r=[];for(var t in n)'function'==typeof n[t]&&r.push(t);return r}};if(window.hasdir!=1){injek3();}");
+					webView.loadUrl("javascript:function injek2(){window.touchblock=0,window.dummy1=1,document.addEventListener('click',function(n){if(1==window.touchblock){n.preventDefault();n.stopPropagation();var t=document.elementFromPoint(n.clientX,n.clientY);window.ganti=function(n){t.outerHTML=n},window.gantiparent=function(n){t.parentElement.outerHTML=n},jsInterface.print(t.parentElement.outerHTML, t.outerHTML)}},!0)}1!=window.dummy1&&injek2();");
+					webView.loadUrl("javascript:function injek(){window.hasovrde=1;var e=XMLHttpRequest.prototype.open;XMLHttpRequest.prototype.open=function(ee,nn,aa){this.addEventListener('load',function(){jsInterface.log(this.responseText, nn, JSON.stringify(arguments))}),e.apply(this,arguments)}};if(window.hasovrde!=1){injek();}");
 					
 					super.onPageFinished(webView, url);
 				}
