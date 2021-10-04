@@ -7,6 +7,7 @@ import android.view.*;
 import com.google.android.material.navigation.NavigationView;
 import android.os.Build;
 import android.webkit.WebView;
+import android.webkit.ConsoleMessage;
 import android.webkit.WebViewClient;
 import android.graphics.*;
 import android.webkit.WebResourceRequest;
@@ -214,8 +215,8 @@ public class MainActivity extends AppCompatActivity {
 		
 		webView.setWebChromeClient(new WebChromeClient() {
 				@Override
-				public boolean onConsoleMessage(android.webkit.ConsoleMessage consoleMessage) {
-					xhrLogs.append(consoleMessage.message()+"\n--------------------\n");
+				public boolean onConsoleMessage(final ConsoleMessage consoleMessage) {
+					xhrLogs.append(consoleMessage.message() + "\n");
 					return false;
 				}
 			}
