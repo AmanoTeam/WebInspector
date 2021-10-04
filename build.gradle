@@ -15,7 +15,7 @@ allprojects {
 	}
 	
 	tasks.withType(JavaCompile) {
-		options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+		options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation" << "-Xmaxerrs" << "3"
 	}
 }
 
