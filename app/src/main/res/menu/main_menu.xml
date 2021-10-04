@@ -3,14 +3,14 @@
 	<item
 		android:id="@+id/goto_url"
 		android:title="Go to web address"
-		android:icon="@drawable/ic_chevron_right"
+		android:icon="@drawable/outline_chevron_right_24"
 		app:showAsAction="always|collapseActionView"
 		app:actionViewClass="androidx.appcompat.widget.SearchView"
 	/>
 	<item
 		android:id="@+id/menu_clear"
 		android:title="Clear logs"
-		android:icon="@drawable/ic_trash"
+		android:icon="@drawable/outline_delete_forever_24"
 		app:showAsAction="always"
 	/>
 	<item
