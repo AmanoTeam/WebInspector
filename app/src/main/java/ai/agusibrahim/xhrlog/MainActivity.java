@@ -107,9 +107,8 @@ public class MainActivity extends AppCompatActivity {
 		jsConsoleInput.setOnKeyListener(new View.OnKeyListener() {
 				public boolean onKey(final View view, int keyCode, final KeyEvent keyEvent) {
 					if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-						final String jsExpression = jsConsoleInput.getText().toString().replaceAll(";$","");
 						
-						webView.loadUrl(String.format("javascript:%s%s%s", jsExpression.startsWith("console.") ? "": "console.log(", jsExpression, jsExpression.startsWith("console.") ? "": ");"));
+						webView.evaluateJavascript(jsConsoleInput.getText().toString(), null);
 						
 						jsConsoleInput.setText("");
 						return true;
@@ -203,9 +202,9 @@ public class MainActivity extends AppCompatActivity {
 				public void onPageFinished(final WebView webView, final String url) {
 					setTitle(webView.getTitle());
 					
-					webView.loadUrl("javascript:function injek3(){window.hasdir=1;window.dir=function(n){var r=[];for(var t in n)'function'==typeof n[t]&&r.push(t);return r}};if(window.hasdir!=1){injek3();}");
-					webView.loadUrl("javascript:function injek2(){window.touchblock=0,window.dummy1=1,document.addEventListener('click',function(n){if(1==window.touchblock){n.preventDefault();n.stopPropagation();var t=document.elementFromPoint(n.clientX,n.clientY);window.ganti=function(n){t.outerHTML=n},window.gantiparent=function(n){t.parentElement.outerHTML=n},jsInterface.print(t.parentElement.outerHTML, t.outerHTML)}},!0)}1!=window.dummy1&&injek2();");
-					webView.loadUrl("javascript:function injek(){window.hasovrde=1;var e=XMLHttpRequest.prototype.open;XMLHttpRequest.prototype.open=function(ee,nn,aa){this.addEventListener('load',function(){jsInterface.log(this.responseText, nn, JSON.stringify(arguments))}),e.apply(this,arguments)}};if(window.hasovrde!=1){injek();}");
+					webView.evaluateJavascript("function injek3(){window.hasdir=1;window.dir=function(n){var r=[];for(var t in n)'function'==typeof n[t]&&r.push(t);return r}};if(window.hasdir!=1){injek3();}", null);
+					webView.evaluateJavascript("function injek2(){window.touchblock=0,window.dummy1=1,document.addEventListener('click',function(n){if(1==window.touchblock){n.preventDefault();n.stopPropagation();var t=document.elementFromPoint(n.clientX,n.clientY);window.ganti=function(n){t.outerHTML=n},window.gantiparent=function(n){t.parentElement.outerHTML=n},jsInterface.print(t.parentElement.outerHTML, t.outerHTML)}},!0)}1!=window.dummy1&&injek2();", null);
+					webView.evaluateJavascript("function injek(){window.hasovrde=1;var e=XMLHttpRequest.prototype.open;XMLHttpRequest.prototype.open=function(ee,nn,aa){this.addEventListener('load',function(){jsInterface.log(this.responseText, nn, JSON.stringify(arguments))}),e.apply(this,arguments)}};if(window.hasovrde!=1){injek();}", null);
 					
 					super.onPageFinished(webView, url);
 				}
@@ -300,7 +299,7 @@ public class MainActivity extends AppCompatActivity {
 				return true;
 			case R.id.menu_touchinspect:
 				// saat menu Touch Inscpector di klik, maka inject js yang sudah diatur
-				webView.loadUrl("javascript:window.touchblock = !window.touchblock;setTimeout(function() {jsInterface.blocktoggle(window.touchblock)}, 100);");
+				webView.evaluateJavascript("window.touchblock = !window.touchblock;setTimeout(function() {jsInterface.blocktoggle(window.touchblock)}, 100);", null);
 				return true;
 			case R.id.menu_exit:
 				finish();
@@ -331,7 +330,7 @@ public class MainActivity extends AppCompatActivity {
 		dl.setPositiveButton(R.string.touch_inspector_save_button, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface p1, int p2) {
-					webView.loadUrl("javascript:window.ganti"+((boolean)ed.getTag()?"parent":"")+"('"+ed.getText().toString()+"');");
+					webView.evaluateJavascript("window.ganti" + ((boolean) ed.getTag() ? "parent": "") + "('" + ed.getText().toString() + "');", null);
 				}
 			});
 		dl.setNeutralButton(R.string.touch_inspector_parent_button, null);
