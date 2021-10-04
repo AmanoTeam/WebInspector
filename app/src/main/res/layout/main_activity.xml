@@ -78,7 +78,7 @@
 					android:padding="10dp"
 					android:typeface="monospace"
 					android:id="@+id/jsConsoleInput"
-					android:hint="Write JS here"
+					android:hint="@string/js_console_hint"
 					android:inputType="text"
 					android:singleLine="true"/>
 				<androidx.core.widget.NestedScrollView

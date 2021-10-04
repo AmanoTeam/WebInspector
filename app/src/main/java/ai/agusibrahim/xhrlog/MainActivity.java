@@ -32,6 +32,8 @@ import java.util.concurrent.*;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 
+import ai.agusibrahim.xhrlog.R;
+
 public class MainActivity extends AppCompatActivity {
 	
 	private AppCompatTextView xhrLogs;
@@ -146,9 +148,9 @@ public class MainActivity extends AppCompatActivity {
 				@Override
 				public void onDrawerOpened(final View drawerView) {
 					if (mainDrawer.isDrawerOpen(Gravity.RIGHT))
-						setTitle("XHR logs");
+						setTitle(R.string.xhr_logs);
 					else if (mainDrawer.isDrawerOpen(Gravity.LEFT))
-						setTitle("Network logs");
+						setTitle(R.string.network_logs);
 					clearLogsButton.setVisible(true);
 				}
 				
@@ -166,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
 			}
 		);
 		
-		// "Web View" stuff
+		// Web View stuff
 		webView = (WebView) findViewById(R.id.webView);
 		
 		webView.getSettings().setJavaScriptEnabled(true);
@@ -178,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
 		webView.setWebViewClient(new WebViewClient() {
 				@Override
 				public void onPageStarted(WebView view, String url, Bitmap favicon) {
-					setTitle("Loading...");
+					setTitle(R.string.page_loading);
 					super.onPageStarted(view, url, favicon);
 				}
 				
@@ -245,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
 		
 		// "Go to web address" button
 		urlInputView = (SearchView) urlInput.getActionView();
-		urlInputView.setQueryHint("Goto URL");
+		urlInputView.setQueryHint(getString(R.string.goto_url_hint));
 		
 		urlInputView.setOnSearchClickListener(new View.OnClickListener() {
 				@Override
@@ -267,7 +269,7 @@ public class MainActivity extends AppCompatActivity {
 						homeScreenView.setVisibility(View.GONE);
 						webView.setVisibility(View.VISIBLE);
 					} else {
-						Toast.makeText(getApplicationContext(), "Unrecognized URI or unsupported protocol", Toast.LENGTH_SHORT).show();
+						Toast.makeText(getApplicationContext(), R.string.unrecognized_uri_toast, Toast.LENGTH_SHORT).show();
 					}
 					
 					return false;
@@ -324,24 +326,24 @@ public class MainActivity extends AppCompatActivity {
 		ed.setText(r);
 		ed.setTag(false);
 		AlertDialog.Builder dl = new AlertDialog.Builder(this);
-		dl.setTitle("Source");
+		dl.setTitle(R.string.touch_inspector_title);
 		dl.setView(v);
-		dl.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+		dl.setPositiveButton(R.string.touch_inspector_save_button, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface p1, int p2) {
 					webView.loadUrl("javascript:window.ganti"+((boolean)ed.getTag()?"parent":"")+"('"+ed.getText().toString()+"');");
 				}
 			});
-		dl.setNeutralButton("Parent", null);
-		dl.setNegativeButton("Close", null);
+		dl.setNeutralButton(R.string.touch_inspector_parent_button, null);
+		dl.setNegativeButton(R.string.touch_inspector_close_button, null);
 		AlertDialog dlg = dl.show();
 		final Button prntBtn = dlg.getButton(AlertDialog.BUTTON_NEUTRAL);
 		prntBtn.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(final View view) {
-					ed.setText((boolean)ed.getTag()?r:s);
-					prntBtn.setText((boolean)ed.getTag()?"Perent":"Inner");
-					ed.setTag(!(boolean)ed.getTag());
+					ed.setText((boolean) ed.getTag() ? r: s);
+					prntBtn.setText((boolean) ed.getTag() ? R.string.touch_inspector_parent_button: R.string.touch_inspector_inner_button);
+					ed.setTag(!(boolean) ed.getTag());
 				}
 			});
 	}
@@ -360,21 +362,21 @@ public class MainActivity extends AppCompatActivity {
 		}
 		@JavascriptInterface
 		@SuppressWarnings("unused")
-		public void print(final String contentparent, final String content) {
+		public void print(final String contentParent, final String content) {
 			webView.post(new Runnable() {
 					@Override
 					public void run() {
-						showSourceDialog(contentparent, content);
+						showSourceDialog(contentParent, content);
 					}
 				});
 		}
 		@JavascriptInterface
 		@SuppressWarnings("unused")
-		public void blocktoggle(final String val) {
+		public void blocktoggle(final String value) {
 			webView.post(new Runnable() {
 					@Override
 					public void run() {
-						Toast.makeText(getApplicationContext(), val.matches("(1|true)")?"Touch Inspector Activated":"Touch Inspector Deactivated", Toast.LENGTH_SHORT).show();
+						Toast.makeText(getApplicationContext(), value.matches("(1|true)") ? R.string.touch_inspector_enabled_toast: R.string.touch_inspector_disabled_toast, Toast.LENGTH_SHORT).show();
 					}
 				});
 

@@ -1,7 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <string name="app_name">WebInspector</string>
-    <string name="hello_world">Hello world!</string>
-
+    <string name="app_name">Web Inspector</string>
+    <string name="go_to_web_address">Go to web address</string>
+    <string name="clear_logs">Clear logs</string>
+    <string name="touch_inspector">Touch inspector</string>
+    <string name="xhr_logs">XHR logs</string>
+    <string name="network_logs">Network logs</string>
+    <string name="exit">Exit</string>
+    <string name="page_loading">Loading...</string>
+    <string name="goto_url_hint">Goto URL</string>
+    <string name="js_console_hint">Write JS here</string>
+    <string name="touch_inspector_title">Source</string>
+    <string name="touch_inspector_save_button">Save</string>
+    <string name="touch_inspector_close_button">Close</string>
+    <string name="touch_inspector_parent_button">Parent</string>
+    <string name="touch_inspector_inner_button">Inner</string>
+    <string name="touch_inspector_enabled_toast">Touch inspector enabled</string>
+    <string name="touch_inspector_disabled_toast">Touch inspector disabled</string>
+    <string name="unrecognized_uri_toast">Unrecognized URI or unsupported protocol</string>
+    <string name="home_screen_tip">Click &gt; on Toolbar to Input URL</string>
 </resources>

@@ -9,7 +9,7 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:textAppearance="?android:attr/textAppearanceLarge"
-		android:text="Web Inspector"
+		android:text="@string/app_name"
 		android:typeface="monospace"
 		android:layout_centerHorizontal="true"
 		android:layout_marginTop="10dp"
@@ -21,16 +21,7 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:textAppearance="?android:attr/textAppearanceSmall"
-		android:text="Agus Ibrahim 2017"
-		android:layout_alignParentBottom="true"
-		android:padding="5dp"
-		android:layout_centerHorizontal="true"/>
-
-	<TextView
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:textAppearance="?android:attr/textAppearanceSmall"
-		android:text="Click &gt; on Toolbar to Input URL"
+		android:text="@string/home_screen_tip"
 		android:layout_below="@id/mainTextView1"
 		android:layout_marginTop="10dp"
 		android:padding="10dp"
