@@ -9,6 +9,7 @@ import android.os.Build;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.graphics.*;
+import android.webkit.WebResourceRequest;
 import android.webkit.JavascriptInterface;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.AppCompatEditText;
@@ -28,6 +29,8 @@ import android.widget.*;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import android.webkit.WebChromeClient;
 import java.util.concurrent.*;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 
 public class MainActivity extends AppCompatActivity {
 	
@@ -66,8 +69,12 @@ public class MainActivity extends AppCompatActivity {
 		networkLogsListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 				@Override
 				public boolean onItemLongClick(final AdapterView<?> adapterView, final View view, final int position, final long id) {
-					setClipboard((String) adapterView.getItemAtPosition(position));
+					final String urlToCopy = (String) adapterView.getItemAtPosition(position);
+					final ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+			        clipboard.setPrimaryClip(ClipData.newPlainText("URL", urlToCopy));
+					
 					Toast.makeText(getApplicationContext(), "Copied to Clipboard", Toast.LENGTH_SHORT).show();
+					
 					adapterView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
 					return true;
 				}
@@ -129,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
 		// Drawer stuff
 		mainDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 		
-		mainDrawer.setDrawerListener(new DrawerLayout.DrawerListener() {
+		mainDrawer.addDrawerListener(new DrawerLayout.DrawerListener() {
 				
 				@Override
 				public void onDrawerSlide(final View drawerView, final float slideOffset) {
@@ -176,16 +183,18 @@ public class MainActivity extends AppCompatActivity {
 				}
 				
 				@Override
-				public WebResourceResponse shouldInterceptRequest(WebView view, final String url) {
-					// capture semua request ke listview
+				public WebResourceResponse shouldInterceptRequest(final WebView view, final WebResourceRequest request) {
+					
+					final String requestUrl = request.getUrl().toString();
+					
 					view.post(new Runnable() {
 							@Override
 							public void run() {
-								networkLogs.add(url);
+								networkLogs.add(requestUrl);
 								arrayAdapter.notifyDataSetChanged();
 							}
 						});
-					return super.shouldInterceptRequest(view, url);
+					return super.shouldInterceptRequest(view, request);
 				}
 				
 				@Override
@@ -372,15 +381,4 @@ public class MainActivity extends AppCompatActivity {
 		}
 	}
 	
-	// fungsi set clipboard utk semua versi API
-	private void setClipboard(String text) {
-		if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
-			android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-			clipboard.setText(text);
-		} else {
-			android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-			android.content.ClipData clip = android.content.ClipData.newPlainText("Copied Text", text);
-			clipboard.setPrimaryClip(clip);
-		}
-	}
 }
