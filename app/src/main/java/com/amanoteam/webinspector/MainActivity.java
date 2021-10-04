@@ -1,4 +1,4 @@
-package ai.agusibrahim.xhrlog;
+package com.amanoteam.webinspector;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -33,7 +33,7 @@ import java.util.concurrent.*;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 
-import ai.agusibrahim.xhrlog.R;
+import com.amanoteam.webinspector.R;
 
 public class MainActivity extends AppCompatActivity {
 	

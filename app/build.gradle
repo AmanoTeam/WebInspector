@@ -4,11 +4,11 @@ android {
     compileSdkVersion 31
 
     defaultConfig {
-        applicationId "ai.agusibrahim.xhrlog"
+        applicationId "com.amanoteam.webinspector"
         minSdkVersion 21
         targetSdkVersion 31
         versionCode 1
-        versionName "1.0"
+        versionName "0.1"
     }
     buildTypes {
         release {
