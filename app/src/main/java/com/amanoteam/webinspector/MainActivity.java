@@ -354,7 +354,7 @@ public class MainActivity extends AppCompatActivity {
 						alertDialogBuilder.setPositiveButton(R.string.touch_inspector_save_button, new DialogInterface.OnClickListener() {
 								@Override
 								public void onClick(DialogInterface p1, int p2) {
-									webView.evaluateJavascript("window.ganti" + ((boolean) sourceCodeEditor.getTag() ? "parent": "") + "('" + sourceCodeEditor.getText().toString() + "');", null);
+									webView.loadUrl("javascript:window.ganti" + ((boolean) sourceCodeEditor.getTag() ? "parent": "") + "('" + sourceCodeEditor.getText().toString() + "');", null);
 								}
 							}
 						);
