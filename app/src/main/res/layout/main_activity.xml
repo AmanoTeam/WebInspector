@@ -38,10 +38,34 @@
 				android:layout_width="match_parent"
 				android:layout_height="match_parent"
 				android:visibility="gone"/>
-			<include
+			<RelativeLayout
 				android:id="@+id/homeScreen"
-				layout="@layout/main"
-				android:visibility="visible"/>
+				xmlns:android="http://schemas.android.com/apk/res/android"
+				android:layout_width="fill_parent"
+				android:layout_height="fill_parent"
+				android:orientation="vertical">
+				<androidx.appcompat.widget.AppCompatTextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:textAppearance="?android:attr/textAppearanceLarge"
+					android:text="@string/app_name"
+					android:typeface="monospace"
+					android:layout_centerHorizontal="true"
+					android:layout_marginTop="10dp"
+					android:textStyle="bold"
+					android:textColor="#4E4E4E"
+					android:id="@+id/homeScreenAppName"/>
+				<androidx.appcompat.widget.AppCompatTextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:textAppearance="?android:attr/textAppearanceSmall"
+					android:text="@string/home_screen_tip"
+					android:layout_below="@id/homeScreenAppName"
+					android:layout_marginTop="10dp"
+					android:padding="10dp"
+					android:layout_centerHorizontal="true"
+					android:textStyle="italic"/>
+			</RelativeLayout>			
 		</androidx.appcompat.widget.LinearLayoutCompat>
 		<com.google.android.material.navigation.NavigationView
 			android:id="@+id/networkLogsNavigationView"

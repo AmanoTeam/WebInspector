@@ -5,7 +5,6 @@
 	android:layout_height="wrap_content"
 	android:layout_width="match_parent"
 	android:orientation="vertical">
-
 	<androidx.appcompat.widget.AppCompatEditText
 		android:layout_height="wrap_content"
 		android:layout_width="match_parent"
@@ -15,6 +14,5 @@
 		android:textSize="12sp"
 		android:background="@drawable/square_light_background"
 		android:padding="20dp"/>
-
 </androidx.appcompat.widget.LinearLayoutCompat>
 

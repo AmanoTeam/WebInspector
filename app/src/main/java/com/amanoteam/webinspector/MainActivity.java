@@ -3,24 +3,25 @@ package com.amanoteam.webinspector;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.view.LayoutInflater;
 import android.app.UiModeManager;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.content.SharedPreferences;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.DialogInterface;
 import android.content.Intent;
-import androidx.core.content.ContextCompat;
-import androidx.preference.PreferenceManager;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View.OnClickListener;
 import android.view.View;
 import android.view.WindowInsets;
 import android.webkit.ConsoleMessage;
@@ -31,31 +32,6 @@ import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.AdapterView;
-import android.app.UiModeManager;
-import android.content.ComponentName;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.content.pm.ResolveInfo;
-import android.content.pm.PackageManager;
-import android.content.res.Configuration;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Parcelable;
-import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View.OnClickListener;
-import android.view.View;
-import android.widget.Toast;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatEditText;
-import androidx.appcompat.widget.AppCompatImageButton;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
-import androidx.preference.PreferenceManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -66,7 +42,9 @@ import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.preference.PreferenceManager;
 import com.google.android.material.navigation.NavigationView;
 
 import com.amanoteam.webinspector.R;
@@ -142,29 +120,22 @@ public class MainActivity extends AppCompatActivity {
 		setContentView(R.layout.main_activity);
 		
 		// ListView and EditText stuff
-		final LayoutInflater layoutInflater = getLayoutInflater();
-		final View sourceView = layoutInflater.inflate(R.layout.source, null);
-		
 		final ListView networkLogsListView = (ListView) findViewById(R.id.networkLogsListView);
 		final AppCompatEditText jsConsoleInput = (AppCompatEditText) findViewById(R.id.jsConsoleInput);
-		final AppCompatEditText sourceCodeEditor = (AppCompatEditText) sourceView.findViewById(R.id.sourceCodeEditor);
 		
 		// This needs to come after setContentView() (see https://stackoverflow.com/a/43635618)
 		if (isDarkMode) {
 			if (textInputStyleIsRoundCorners) {
 				networkLogsListView.setBackgroundResource(R.drawable.round_dark_background);
 				jsConsoleInput.setBackgroundResource(R.drawable.round_dark_background);
-				sourceCodeEditor.setBackgroundResource(R.drawable.round_dark_background);
 			} else {
 				networkLogsListView.setBackgroundResource(R.drawable.square_dark_background);
 				jsConsoleInput.setBackgroundResource(R.drawable.square_dark_background);
-				sourceCodeEditor.setBackgroundResource(R.drawable.square_dark_background);
 			}
 		} else {
 			if (textInputStyleIsRoundCorners) {
 				networkLogsListView.setBackgroundResource(R.drawable.round_light_background);
 				jsConsoleInput.setBackgroundResource(R.drawable.round_light_background);
-				sourceCodeEditor.setBackgroundResource(R.drawable.round_light_background);
 			}
 		}
 		
@@ -463,6 +434,19 @@ public class MainActivity extends AppCompatActivity {
 						final View sourceView = layoutInflater.inflate(R.layout.source, null);
 						
 						final AppCompatEditText sourceCodeEditor = (AppCompatEditText) sourceView.findViewById(R.id.sourceCodeEditor);
+						
+						if (isDarkMode) {
+							if (textInputStyleIsRoundCorners) {
+								urlInputView.setBackgroundResource(R.drawable.round_dark_background);
+							} else {
+								urlInputView.setBackgroundResource(R.drawable.square_dark_background);
+							}
+						} else {
+							if (textInputStyleIsRoundCorners) {
+								urlInputView.setBackgroundResource(R.drawable.round_light_background);
+							}
+						}
+						
 						sourceCodeEditor.setText(content);
 						sourceCodeEditor.setTag(false);
 						
