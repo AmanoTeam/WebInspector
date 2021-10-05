@@ -18,5 +18,6 @@
     <string name="touch_inspector_enabled_toast">Touch inspector enabled</string>
     <string name="touch_inspector_disabled_toast">Touch inspector disabled</string>
     <string name="unrecognized_uri_toast">Unrecognized URI or unsupported protocol</string>
+    <string name="copied_to_clipboard_toast">Copied to clipboard</string>
     <string name="home_screen_tip">Click &gt; on Toolbar to Input URL</string>
 </resources>

@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
 					final ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 			        clipboard.setPrimaryClip(ClipData.newPlainText("URL", urlToCopy));
 					
-					Toast.makeText(getApplicationContext(), "Copied to Clipboard", Toast.LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), R.string.copied_to_clipboard_toast, Toast.LENGTH_SHORT).show();
 					
 					adapterView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
 					return true;
