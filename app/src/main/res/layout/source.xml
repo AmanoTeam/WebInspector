@@ -13,7 +13,7 @@
 		android:typeface="monospace"
 		android:id="@+id/source_code_editor"
 		android:textSize="12sp"
-		android:background="@null"
+		android:background="@drawable/square_light_background"
 		android:padding="20dp"/>
 
 </androidx.appcompat.widget.LinearLayoutCompat>

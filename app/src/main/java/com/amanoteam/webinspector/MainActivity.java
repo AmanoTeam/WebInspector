@@ -252,6 +252,7 @@ public class MainActivity extends AppCompatActivity {
 		// "Go to web address" button
 		urlInputView = (SearchView) urlInput.getActionView();
 		urlInputView.setQueryHint(getString(R.string.goto_url_hint));
+		urlInputView.setBackgroundResource(R.drawable.light_background);
 		
 		urlInputView.setOnSearchClickListener(new View.OnClickListener() {
 				@Override
