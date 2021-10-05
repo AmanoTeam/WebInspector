@@ -1,0 +1,20 @@
+<resources>
+    <string-array name="app_theme_entries">
+        <item>Follow system</item>
+        <item>Light</item>
+        <item>Dark</item>
+    </string-array>
+    <string-array name="app_theme_values">
+        <item>follow_system</item>
+        <item>light</item>
+        <item>dark</item>
+    </string-array>
+    <string-array name="text_input_style_entries">
+        <item>Square</item>
+        <item>Round</item>
+    </string-array>
+    <string-array name="text_input_style_values">
+        <item>square</item>
+        <item>round</item>
+    </string-array>
+</resources>

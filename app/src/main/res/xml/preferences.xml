@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+  <PreferenceCategory android:title="Appearance">
+    <ListPreference
+		android:defaultValue="follow_system"
+		android:entries="@array/app_theme_entries"
+		android:entryValues="@array/app_theme_values"
+		android:key="appTheme"
+		android:title="Theme" >
+	</ListPreference>
+    <ListPreference
+		android:defaultValue="square"
+		android:entries="@array/text_input_style_entries"
+		android:entryValues="@array/text_input_style_values"
+		android:key="textInputStyle"
+		android:title="Text input style" >
+	</ListPreference>
+  </PreferenceCategory>
+</PreferenceScreen>

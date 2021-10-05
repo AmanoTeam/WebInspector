@@ -49,8 +49,7 @@
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
 			android:layout_gravity="start"
-			app:layout_scrollFlags="enterAlways"
-			android:background="@android:color/white">
+			app:layout_scrollFlags="enterAlways">
 			<ListView
 				android:background="@drawable/square_light_background"
 				android:layout_height="wrap_content"
@@ -63,8 +62,7 @@
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
 			android:layout_gravity="end"
-			app:layout_scrollFlags="enterAlways"
-			android:background="@android:color/white">
+			app:layout_scrollFlags="enterAlways">
 			<androidx.appcompat.widget.LinearLayoutCompat
 				android:layout_height="match_parent"
 				android:layout_width="match_parent"

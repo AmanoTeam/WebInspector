@@ -3,9 +3,16 @@ package com.amanoteam.webinspector;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.view.LayoutInflater;
+import android.app.UiModeManager;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.content.SharedPreferences;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.DialogInterface;
+import android.content.Intent;
+import androidx.core.content.ContextCompat;
+import androidx.preference.PreferenceManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -24,6 +31,31 @@ import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.AdapterView;
+import android.app.UiModeManager;
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.content.pm.ResolveInfo;
+import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Parcelable;
+import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View.OnClickListener;
+import android.view.View;
+import android.widget.Toast;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.preference.PreferenceManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -38,6 +70,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.navigation.NavigationView;
 
 import com.amanoteam.webinspector.R;
+import com.amanoteam.webinspector.SettingsActivity;
 
 public class MainActivity extends AppCompatActivity {
 	
@@ -60,17 +93,86 @@ public class MainActivity extends AppCompatActivity {
 	
 	private View homeScreenView;
 	
+	private boolean isDarkMode = false;
+	private boolean textInputStyleIsRoundCorners = false;
+	
+	private final OnSharedPreferenceChangeListener onSharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+		@Override
+		public void onSharedPreferenceChanged(final SharedPreferences settings, final String key) {
+			if (key.equals("appTheme") || key.equals("textInputStyle")) {
+				recreate();
+			}
+		}
+	};
+	
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
+		
+		// Preferences stuff
+		final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+		settings.registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener);
+		
+		// Dark mode stuff
+		final String appTheme = settings.getString("appTheme", "follow_system");
+		
+		if (appTheme.equals("follow_system")) {
+			// Snippet from https://github.com/Andrew67/dark-mode-toggle/blob/11c1e16071b301071be0c4715a15fcb031d0bb64/app/src/main/java/com/andrew67/darkmode/UiModeManagerUtil.java#L17
+			final UiModeManager uiModeManager = ContextCompat.getSystemService(this, UiModeManager.class);
+			
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M || uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_CAR) {
+				isDarkMode = true;
+			}
+		} else if (appTheme.equals("dark")) {
+			isDarkMode = true;
+		}
+		
+		// Text input style stuff
+		final String textInputStyle = settings.getString("textInputStyle", "square");
+		
+		if (textInputStyle.equals("round")) {
+			textInputStyleIsRoundCorners = true;
+		}
+		
+		if (isDarkMode) {
+			setTheme(R.style.DarkTheme);
+		}
+		
 		super.onCreate(savedInstanceState);
+		
 		setContentView(R.layout.main_activity);
+		
+		// ListView and EditText stuff
+		final LayoutInflater layoutInflater = getLayoutInflater();
+		final View sourceView = layoutInflater.inflate(R.layout.source, null);
+		
+		final ListView networkLogsListView = (ListView) findViewById(R.id.networkLogsListView);
+		final AppCompatEditText jsConsoleInput = (AppCompatEditText) findViewById(R.id.jsConsoleInput);
+		final AppCompatEditText sourceCodeEditor = (AppCompatEditText) sourceView.findViewById(R.id.sourceCodeEditor);
+		
+		// This needs to come after setContentView() (see https://stackoverflow.com/a/43635618)
+		if (isDarkMode) {
+			if (textInputStyleIsRoundCorners) {
+				networkLogsListView.setBackgroundResource(R.drawable.round_dark_background);
+				jsConsoleInput.setBackgroundResource(R.drawable.round_dark_background);
+				sourceCodeEditor.setBackgroundResource(R.drawable.round_dark_background);
+			} else {
+				networkLogsListView.setBackgroundResource(R.drawable.square_dark_background);
+				jsConsoleInput.setBackgroundResource(R.drawable.square_dark_background);
+				sourceCodeEditor.setBackgroundResource(R.drawable.square_dark_background);
+			}
+		} else {
+			if (textInputStyleIsRoundCorners) {
+				networkLogsListView.setBackgroundResource(R.drawable.round_light_background);
+				jsConsoleInput.setBackgroundResource(R.drawable.round_light_background);
+				sourceCodeEditor.setBackgroundResource(R.drawable.round_light_background);
+			}
+		}
 		
 		// Action bar stuff
 		final Toolbar mainToolbar = (Toolbar) findViewById(R.id.main_toolbar);
 		setSupportActionBar(mainToolbar);
 		
 		// "Network logs" stuff
-		final ListView networkLogsListView = (ListView) findViewById(R.id.networkLogsListView);
 		networkLogsListView.setAdapter(arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, networkLogs));
 		
 		networkLogsListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -107,8 +209,6 @@ public class MainActivity extends AppCompatActivity {
 		);
 		
 		// "JavaScript console" stuff
-		final AppCompatEditText jsConsoleInput = (AppCompatEditText) findViewById(R.id.jsConsoleInput);
-		
 		jsConsoleInput.setOnKeyListener(new View.OnKeyListener() {
 				public boolean onKey(final View view, int keyCode, final KeyEvent keyEvent) {
 					if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
@@ -249,10 +349,21 @@ public class MainActivity extends AppCompatActivity {
 		clearLogsButton = menu.findItem(R.id.menu_clear);
 		clearLogsButton.setVisible(false);
 		
-		// "Go to web address" button
+		// URL input
 		urlInputView = (SearchView) urlInput.getActionView();
 		urlInputView.setQueryHint(getString(R.string.goto_url_hint));
-		urlInputView.setBackgroundResource(R.drawable.light_background);
+		
+		if (isDarkMode) {
+			if (textInputStyleIsRoundCorners) {
+				urlInputView.setBackgroundResource(R.drawable.round_dark_background);
+			} else {
+				urlInputView.setBackgroundResource(R.drawable.square_dark_background);
+			}
+		} else {
+			if (textInputStyleIsRoundCorners) {
+				urlInputView.setBackgroundResource(R.drawable.round_light_background);
+			}
+		}
 		
 		urlInputView.setOnSearchClickListener(new View.OnClickListener() {
 				@Override
@@ -295,6 +406,9 @@ public class MainActivity extends AppCompatActivity {
 	@Override
 	public boolean onOptionsItemSelected(final MenuItem item) {
 		switch (item.getItemId()) {
+			case R.id.menu_touchinspect:
+				webView.evaluateJavascript("window.touchblock = !window.touchblock;setTimeout(function() {jsInterface.blocktoggle(window.touchblock)}, 100);", null);
+				return true;
 			case R.id.menu_xhrlog:
 				mainDrawer.closeDrawer(Gravity.LEFT);
 				mainDrawer.openDrawer(Gravity.RIGHT);
@@ -303,9 +417,11 @@ public class MainActivity extends AppCompatActivity {
 				mainDrawer.closeDrawer(Gravity.RIGHT);
 				mainDrawer.openDrawer(Gravity.LEFT);
 				return true;
-			case R.id.menu_touchinspect:
-				// saat menu Touch Inscpector di klik, maka inject js yang sudah diatur
-				webView.evaluateJavascript("window.touchblock = !window.touchblock;setTimeout(function() {jsInterface.blocktoggle(window.touchblock)}, 100);", null);
+			case R.id.menu_settings:
+				final Intent settingsIntent = new Intent(this, SettingsActivity.class);
+				settingsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				settingsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				startActivity(settingsIntent);
 				return true;
 			case R.id.menu_exit:
 				finish();
@@ -343,15 +459,16 @@ public class MainActivity extends AppCompatActivity {
 			webView.post(new Runnable() {
 					@Override
 					public void run() {
-						View v = getLayoutInflater().inflate(R.layout.source, null);
+						final LayoutInflater layoutInflater = getLayoutInflater();
+						final View sourceView = layoutInflater.inflate(R.layout.source, null);
 						
-						final AppCompatEditText sourceCodeEditor = (AppCompatEditText) v.findViewById(R.id.source_code_editor);
+						final AppCompatEditText sourceCodeEditor = (AppCompatEditText) sourceView.findViewById(R.id.sourceCodeEditor);
 						sourceCodeEditor.setText(content);
 						sourceCodeEditor.setTag(false);
 						
 						final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
 						alertDialogBuilder.setTitle(R.string.touch_inspector_title);
-						alertDialogBuilder.setView(v);
+						alertDialogBuilder.setView(sourceView);
 						alertDialogBuilder.setPositiveButton(R.string.touch_inspector_save_button, new DialogInterface.OnClickListener() {
 								@Override
 								public void onClick(DialogInterface p1, int p2) {
