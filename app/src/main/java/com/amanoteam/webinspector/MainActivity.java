@@ -323,34 +323,6 @@ public class MainActivity extends AppCompatActivity {
 				return super.onOptionsItemSelected(item);
 		}
 	}
-	// dialog source code view/edit
-	private void showSourceDialog(final String s, final String r) {
-		View v = getLayoutInflater().inflate(R.layout.source, null);
-		final AppCompatEditText ed = (AppCompatEditText)v.findViewById(R.id.sourceEditText1);
-		ed.setText(r);
-		ed.setTag(false);
-		AlertDialog.Builder dl = new AlertDialog.Builder(this);
-		dl.setTitle(R.string.touch_inspector_title);
-		dl.setView(v);
-		dl.setPositiveButton(R.string.touch_inspector_save_button, new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface p1, int p2) {
-					webView.evaluateJavascript("window.ganti" + ((boolean) ed.getTag() ? "parent": "") + "('" + ed.getText().toString() + "');", null);
-				}
-			});
-		dl.setNeutralButton(R.string.touch_inspector_parent_button, null);
-		dl.setNegativeButton(R.string.touch_inspector_close_button, null);
-		AlertDialog dlg = dl.show();
-		final Button prntBtn = dlg.getButton(AlertDialog.BUTTON_NEUTRAL);
-		prntBtn.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(final View view) {
-					ed.setText((boolean) ed.getTag() ? r: s);
-					prntBtn.setText((boolean) ed.getTag() ? R.string.touch_inspector_parent_button: R.string.touch_inspector_inner_button);
-					ed.setTag(!(boolean) ed.getTag());
-				}
-			});
-	}
 	
 	// js interface
 	class MyJavaScriptInterface {
@@ -370,9 +342,40 @@ public class MainActivity extends AppCompatActivity {
 			webView.post(new Runnable() {
 					@Override
 					public void run() {
-						showSourceDialog(contentParent, content);
+						View v = getLayoutInflater().inflate(R.layout.source, null);
+						
+						final AppCompatEditText sourceCodeEditor = (AppCompatEditText) v.findViewById(R.id.source_code_editor);
+						sourceCodeEditor.setText(content);
+						sourceCodeEditor.setTag(false);
+						
+						final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getApplicationContext());
+						alertDialogBuilder.setTitle(R.string.touch_inspector_title);
+						alertDialogBuilder.setView(v);
+						alertDialogBuilder.setPositiveButton(R.string.touch_inspector_save_button, new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface p1, int p2) {
+									webView.evaluateJavascript("window.ganti" + ((boolean) sourceCodeEditor.getTag() ? "parent": "") + "('" + sourceCodeEditor.getText().toString() + "');", null);
+								}
+							}
+						);
+						alertDialogBuilder.setNeutralButton(R.string.touch_inspector_parent_button, null);
+						alertDialogBuilder.setNegativeButton(R.string.touch_inspector_close_button, null);
+						
+						final AlertDialog alertDialog = alertDialogBuilder.show();
+						
+						final Button neutralButton = alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
+						neutralButton.setOnClickListener(new View.OnClickListener() {
+								@Override
+								public void onClick(final View view) {
+									sourceCodeEditor.setText((boolean) sourceCodeEditor.getTag() ? content: contentParent);
+									neutralButton.setText((boolean) sourceCodeEditor.getTag() ? R.string.touch_inspector_parent_button: R.string.touch_inspector_inner_button);
+									sourceCodeEditor.setTag(!(boolean) sourceCodeEditor.getTag());
+								}
+							}
+						);
 					}
-				});
+				}
+			);
 		}
 		@JavascriptInterface
 		@SuppressWarnings("unused")
