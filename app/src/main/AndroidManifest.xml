@@ -10,7 +10,7 @@
     <application
         android:allowBackup="true"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/LigthTheme" >
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"

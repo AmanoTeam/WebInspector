@@ -348,7 +348,7 @@ public class MainActivity extends AppCompatActivity {
 						sourceCodeEditor.setText(content);
 						sourceCodeEditor.setTag(false);
 						
-						final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getApplicationContext());
+						final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
 						alertDialogBuilder.setTitle(R.string.touch_inspector_title);
 						alertDialogBuilder.setView(v);
 						alertDialogBuilder.setPositiveButton(R.string.touch_inspector_save_button, new DialogInterface.OnClickListener() {
