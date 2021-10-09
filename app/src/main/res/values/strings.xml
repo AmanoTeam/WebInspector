@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Web Inspector</string>
+    <string name="app_name">Web Inspector (fork)</string>
     <string name="go_to_web_address">Go to web address</string>
     <string name="clear_logs">Clear logs</string>
     <string name="touch_inspector">Touch inspector</string>
