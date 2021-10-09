@@ -10,7 +10,7 @@
 		android:layout_width="match_parent"
 		android:gravity="top|left"
 		android:typeface="monospace"
-		android:id="@+id/sourceCodeEditor"
+		android:id="@+id/source_code_editor_text"
 		android:textSize="12sp"
 		android:background="@drawable/square_light_background"
 		android:padding="20dp"/>

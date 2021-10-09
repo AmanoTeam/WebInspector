@@ -120,8 +120,8 @@ public class MainActivity extends AppCompatActivity {
 		setContentView(R.layout.main_activity);
 		
 		// ListView and EditText stuff
-		final ListView networkLogsListView = (ListView) findViewById(R.id.networkLogsListView);
-		final AppCompatEditText jsConsoleInput = (AppCompatEditText) findViewById(R.id.jsConsoleInput);
+		final ListView networkLogsListView = (ListView) findViewById(R.id.network_logs_list);
+		final AppCompatEditText jsConsoleInput = (AppCompatEditText) findViewById(R.id.javascript_console_input);
 		
 		// This needs to come after setContentView() (see https://stackoverflow.com/a/43635618)
 		if (isDarkMode) {
@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
 			}
 		);
 		
-		networkLogsNavigationView = (NavigationView) findViewById(R.id.networkLogsNavigationView);
+		networkLogsNavigationView = (NavigationView) findViewById(R.id.network_logs_navigation);
 		
 		networkLogsNavigationView.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
 				@Override
@@ -195,9 +195,9 @@ public class MainActivity extends AppCompatActivity {
 		);
 		
 		// "XML HTTP Request logs" stuff
-		xhrLogs = (AppCompatTextView) findViewById(R.id.xhrLogs);
+		xhrLogs = (AppCompatTextView) findViewById(R.id.xhr_logs_list);
 		
-		xhrNavigationView = (NavigationView) findViewById(R.id.xhrNavigationView);
+		xhrNavigationView = (NavigationView) findViewById(R.id.xhr_logs_navigation);
 		
 		xhrNavigationView.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
 				@Override
@@ -208,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
 		);
 		
 		// Some layout views stuff
-		homeScreenView = findViewById(R.id.homeScreen);
+		homeScreenView = findViewById(R.id.home_screen);
 		
 		// Drawer stuff
 		mainDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -231,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
 				
 				@Override
 				public void onDrawerClosed(final View view) {
-					setTitle(webView.getTitle().length()>1?webView.getTitle():getResources().getString(R.string.app_name));
+					setTitle(webView.getTitle().length() > 1 ? webView.getTitle(): getResources().getString(R.string.app_name));
 					clearLogsButton.setVisible(false);
 				}
 				
@@ -244,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
 		);
 		
 		// Web View stuff
-		webView = (WebView) findViewById(R.id.webView);
+		webView = (WebView) findViewById(R.id.web_view);
 		
 		webView.getSettings().setJavaScriptEnabled(true);
 		
@@ -431,9 +431,9 @@ public class MainActivity extends AppCompatActivity {
 					@Override
 					public void run() {
 						final LayoutInflater layoutInflater = getLayoutInflater();
-						final View sourceView = layoutInflater.inflate(R.layout.source, null);
+						final View sourceView = layoutInflater.inflate(R.layout.source_code_viewer, null);
 						
-						final AppCompatEditText sourceCodeEditor = (AppCompatEditText) sourceView.findViewById(R.id.sourceCodeEditor);
+						final AppCompatEditText sourceCodeEditor = (AppCompatEditText) sourceView.findViewById(R.id.source_code_editor_text);
 						
 						if (isDarkMode) {
 							if (textInputStyleIsRoundCorners) {
