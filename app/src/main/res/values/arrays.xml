@@ -1,8 +1,8 @@
 <resources>
     <string-array name="app_theme_entries">
-        <item>Follow system</item>
-        <item>Light</item>
-        <item>Dark</item>
+        <item>@string/settings_app_theme_follow_system</item>
+        <item>@string/settings_app_theme_light</item>
+        <item>@string/settings_app_theme_dark</item>
     </string-array>
     <string-array name="app_theme_values">
         <item>follow_system</item>
@@ -10,8 +10,8 @@
         <item>dark</item>
     </string-array>
     <string-array name="text_input_style_entries">
-        <item>Square</item>
-        <item>Round</item>
+        <item>@string/settings_text_input_style_square</item>
+        <item>@string/settings_text_input_style_rounded</item>
     </string-array>
     <string-array name="text_input_style_values">
         <item>square</item>

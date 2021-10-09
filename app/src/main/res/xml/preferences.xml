@@ -6,14 +6,14 @@
 		android:entries="@array/app_theme_entries"
 		android:entryValues="@array/app_theme_values"
 		android:key="appTheme"
-		android:title="Theme" >
+		android:title="@string/settings_theme" >
 	</ListPreference>
     <ListPreference
 		android:defaultValue="square"
 		android:entries="@array/text_input_style_entries"
 		android:entryValues="@array/text_input_style_values"
 		android:key="textInputStyle"
-		android:title="Text input style" >
+		android:title="@string/settings_text_input_style" >
 	</ListPreference>
   </PreferenceCategory>
 </PreferenceScreen>

@@ -10,7 +10,7 @@
     <string name="exit">Exit</string>
     <string name="page_loading">Loading...</string>
     <string name="goto_url_hint">Goto URL</string>
-    <string name="js_console_hint">Write JS here</string>
+    <string name="javascript_console_hint">Write JS here</string>
     <string name="touch_inspector_title">Source</string>
     <string name="touch_inspector_save_button">Save</string>
     <string name="touch_inspector_close_button">Close</string>
@@ -21,4 +21,11 @@
     <string name="unrecognized_uri_toast">Unrecognized URI or unsupported protocol</string>
     <string name="copied_to_clipboard_toast">Copied to clipboard</string>
     <string name="home_screen_tip">Click &gt; on Toolbar to Input URL</string>
+    <string name="settings_theme">Theme</string>
+    <string name="settings_text_input_style">Text input style</string>
+    <string name="settings_text_input_style_square">Square</string>
+    <string name="settings_text_input_style_rounded">Rounded</string>
+    <string name="settings_app_theme_follow_system">Follow system</string>
+    <string name="settings_app_theme_light">Light</string>
+    <string name="settings_app_theme_dark">Dark</string>
 </resources>
