@@ -10,24 +10,26 @@
     <application
         android:allowBackup="true"
         android:label="@string/app_name"
-        android:theme="@style/LigthTheme" >
+        android:theme="@style/LigthTheme" >	
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
 			android:exported="true"
 			android:launchMode="singleInstance"
 			android:alwaysRetainTaskState="true"
-        	android:configChanges="orientation|screenSize" >
+			android:configChanges="orientation|screenSize" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-        	android:label="Settings"
-			android:name=".SettingsActivity"
-			android:launchMode="singleTop"
-			android:alwaysRetainTaskState="true">
+        	android:name=".SettingsActivity"
+        	android:label="@string/settings"
+        	android:exported="false"
+        	android:launchMode="singleTop"
+			android:alwaysRetainTaskState="true"
+			android:configChanges="orientation|screenSize" >
         </activity>
     </application>
 </manifest>
