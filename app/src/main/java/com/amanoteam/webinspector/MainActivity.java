@@ -324,18 +324,6 @@ public class MainActivity extends AppCompatActivity {
 		urlInputView = (SearchView) urlInput.getActionView();
 		urlInputView.setQueryHint(getString(R.string.goto_url_hint));
 		
-		if (isDarkMode) {
-			if (textInputStyleIsRoundCorners) {
-				urlInputView.setBackgroundResource(R.drawable.round_dark_background);
-			} else {
-				urlInputView.setBackgroundResource(R.drawable.square_dark_background);
-			}
-		} else {
-			if (textInputStyleIsRoundCorners) {
-				urlInputView.setBackgroundResource(R.drawable.round_light_background);
-			}
-		}
-		
 		urlInputView.setOnSearchClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(final View view) {
@@ -437,13 +425,13 @@ public class MainActivity extends AppCompatActivity {
 						
 						if (isDarkMode) {
 							if (textInputStyleIsRoundCorners) {
-								urlInputView.setBackgroundResource(R.drawable.round_dark_background);
+								sourceCodeEditor.setBackgroundResource(R.drawable.round_dark_background);
 							} else {
-								urlInputView.setBackgroundResource(R.drawable.square_dark_background);
+								sourceCodeEditor.setBackgroundResource(R.drawable.square_dark_background);
 							}
 						} else {
 							if (textInputStyleIsRoundCorners) {
-								urlInputView.setBackgroundResource(R.drawable.round_light_background);
+								sourceCodeEditor.setBackgroundResource(R.drawable.round_light_background);
 							}
 						}
 						

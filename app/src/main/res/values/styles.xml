@@ -2,6 +2,11 @@
     <style name="DarkTheme" parent="@style/Theme.AppCompat.DayNight.NoActionBar">
     	<item name="android:textColor">#FFFAFAFA</item>
 		<item name="android:itemBackground">#1F1B24</item>
+		<item name="android:windowTranslucentStatus">true</item>
+		<item name="android:windowTranslucentNavigation">true</item>
 	</style>
-    <style name="LigthTheme" parent="@style/Theme.AppCompat.Light.NoActionBar"/>
+    <style name="LigthTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
+    	<item name="android:windowTranslucentStatus">true</item>
+		<item name="android:windowTranslucentNavigation">true</item>
+	</style>
 </resources>

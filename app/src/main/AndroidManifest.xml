@@ -17,7 +17,8 @@
 			android:exported="true"
 			android:launchMode="singleInstance"
 			android:alwaysRetainTaskState="true"
-			android:configChanges="orientation|screenSize" >
+			android:configChanges="orientation|screenSize"
+			android:fitsSystemWindows="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -29,7 +30,8 @@
         	android:exported="false"
         	android:launchMode="singleTop"
 			android:alwaysRetainTaskState="true"
-			android:configChanges="orientation|screenSize" >
+			android:configChanges="orientation|screenSize"
+			android:fitsSystemWindows="true" >
         </activity>
     </application>
 </manifest>
