@@ -9,7 +9,7 @@
     <string name="settings">Settings</string>
     <string name="exit">Exit</string>
     <string name="page_loading">Loading...</string>
-    <string name="goto_url_hint">Goto URL</string>
+    <string name="url_input_hint">Type or paste web address</string>
     <string name="javascript_console_hint">Write JS here</string>
     <string name="touch_inspector_title">Source</string>
     <string name="touch_inspector_save_button">Save</string>

@@ -322,7 +322,7 @@ public class MainActivity extends AppCompatActivity {
 		
 		// URL input
 		urlInputView = (SearchView) urlInput.getActionView();
-		urlInputView.setQueryHint(getString(R.string.goto_url_hint));
+		urlInputView.setQueryHint(getString(R.string.url_input_hint));
 		
 		urlInputView.setOnSearchClickListener(new View.OnClickListener() {
 				@Override
