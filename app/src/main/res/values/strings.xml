@@ -18,7 +18,6 @@
     <string name="touch_inspector_inner_button">Inner</string>
     <string name="touch_inspector_enabled_toast">Touch inspector enabled</string>
     <string name="touch_inspector_disabled_toast">Touch inspector disabled</string>
-    <string name="unrecognized_uri_toast">Unrecognized URI or unsupported protocol</string>
     <string name="copied_to_clipboard_toast">Copied to clipboard</string>
     <string name="home_screen_tip">Click &gt; on Toolbar to Input URL</string>
     <string name="settings_theme">Theme</string>
@@ -28,4 +27,5 @@
     <string name="settings_app_theme_follow_system">Follow system</string>
     <string name="settings_app_theme_light">Light</string>
     <string name="settings_app_theme_dark">Dark</string>
+    <string name="intent_chooser_open_with">Open with</string>
 </resources>

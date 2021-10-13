@@ -12,6 +12,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -268,6 +269,22 @@ public class MainActivity extends AppCompatActivity {
 				}
 				
 				@Override
+				public boolean shouldOverrideUrlLoading(final WebView view, final WebResourceRequest request) {
+					final String requestUrl = request.getUrl().toString();
+					
+					if (requestUrl.startsWith("http:") || requestUrl.startsWith("https:")) {
+						return false;
+					}
+					
+					final Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(requestUrl));
+					final Intent intentChooser = Intent.createChooser(intent, getString(R.string.intent_chooser_open_with));
+					
+					startActivity(intentChooser);
+					
+					return true;
+				}
+				
+				@Override
 				public WebResourceResponse shouldInterceptRequest(final WebView view, final WebResourceRequest request) {
 					
 					final String requestUrl = request.getUrl().toString();
@@ -348,18 +365,18 @@ public class MainActivity extends AppCompatActivity {
 		
 		urlInputView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 				@Override
-				public boolean onQueryTextSubmit(final String urlTextInput) {
+				public boolean onQueryTextSubmit(final String url) {
 					
-					if (urlTextInput.startsWith("http://") || urlTextInput.startsWith("https://")) {
-						webView.loadUrl(urlTextInput);
-						
-						urlInput.collapseActionView();
-						
-						homeScreenView.setVisibility(View.GONE);
-						webView.setVisibility(View.VISIBLE);
+					if (url.matches("^[a-z]+:.+")) {
+						webView.loadUrl(url);
 					} else {
-						Toast.makeText(getApplicationContext(), R.string.unrecognized_uri_toast, Toast.LENGTH_SHORT).show();
+						webView.loadUrl(String.format("http://%s", url));
 					}
+					
+					urlInput.collapseActionView();
+						
+					homeScreenView.setVisibility(View.GONE);
+					webView.setVisibility(View.VISIBLE);
 					
 					return false;
 				}
