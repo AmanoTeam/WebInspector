@@ -4,7 +4,7 @@
     <string name="go_to_web_address">Go to web address</string>
     <string name="clear_logs">Clear logs</string>
     <string name="touch_inspector">Touch inspector</string>
-    <string name="xhr_logs">XHR logs</string>
+    <string name="javascript_logs">JavaScript console</string>
     <string name="network_logs">Network logs</string>
     <string name="settings">Settings</string>
     <string name="exit">Exit</string>

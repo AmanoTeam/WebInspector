@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 	
 	private AppCompatTextView jsConsoleLogs;
 	
-	private NavigationView xhrNavigationView;
+	private NavigationView jsNavigationView;
 	private NavigationView networkLogsNavigationView;
 	
 	private List<String> networkLogs = new ArrayList<String>();
@@ -203,11 +203,11 @@ public class MainActivity extends AppCompatActivity {
 		);
 		
 		// "JavaScript console" stuff
-		jsConsoleLogs = (AppCompatTextView) findViewById(R.id.xhr_logs_list);
+		jsConsoleLogs = (AppCompatTextView) findViewById(R.id.javascript_logs_list);
 		
-		xhrNavigationView = (NavigationView) findViewById(R.id.xhr_logs_navigation);
+		jsNavigationView = (NavigationView) findViewById(R.id.javascript_logs_navigation);
 		
-		xhrNavigationView.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
+		jsNavigationView.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
 				@Override
 				public WindowInsets onApplyWindowInsets(final View view, final WindowInsets windowInsets) {
 					return windowInsets;
@@ -231,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
 				@Override
 				public void onDrawerOpened(final View drawerView) {
 					if (mainDrawer.isDrawerOpen(Gravity.RIGHT))
-						setTitle(R.string.xhr_logs);
+						setTitle(R.string.javascript_logs);
 					else if (mainDrawer.isDrawerOpen(Gravity.LEFT))
 						setTitle(R.string.network_logs);
 					clearLogsButton.setVisible(true);
@@ -382,7 +382,7 @@ public class MainActivity extends AppCompatActivity {
 			case R.id.menu_touchinspect:
 				webView.evaluateJavascript("window.touchblock = !window.touchblock;setTimeout(function() {jsInterface.blocktoggle(window.touchblock)}, 100);", null);
 				return true;
-			case R.id.menu_xhrlog:
+			case R.id.menu_jslog:
 				mainDrawer.closeDrawer(Gravity.LEFT);
 				mainDrawer.openDrawer(Gravity.RIGHT);
 				return true;

@@ -68,7 +68,7 @@
 				android:id="@+id/network_logs_list"/>
 		</com.google.android.material.navigation.NavigationView>
 		<com.google.android.material.navigation.NavigationView
-			android:id="@+id/xhr_logs_navigation"
+			android:id="@+id/javascript_logs_navigation"
 			android:fitsSystemWindows="false"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
@@ -95,7 +95,7 @@
 					<androidx.appcompat.widget.AppCompatTextView
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
-						android:id="@+id/xhr_logs_list"
+						android:id="@+id/javascript_logs_list"
 						android:textIsSelectable="true"
 						android:padding="10dp"
 						android:typeface="monospace"/>

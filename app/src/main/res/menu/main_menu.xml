@@ -17,8 +17,8 @@
         android:id="@+id/menu_touchinspect"
         android:title="@string/touch_inspector"/>
     <item
-        android:id="@+id/menu_xhrlog"
-        android:title="@string/xhr_logs"/>
+        android:id="@+id/menu_jslog"
+        android:title="@string/javascript_logs"/>
 	<item
         android:id="@+id/menu_netlog"
         android:title="@string/network_logs"/>
