@@ -22,10 +22,8 @@
     <string name="home_screen_tip">Click &gt; on Toolbar to Input URL</string>
     <string name="settings_theme">Theme</string>
     <string name="settings_text_input_style">Text input style</string>
-    <string name="settings_text_input_style_square">Square</string>
-    <string name="settings_text_input_style_rounded">Rounded</string>
-    <string name="settings_app_theme_follow_system">Follow system</string>
-    <string name="settings_app_theme_light">Light</string>
-    <string name="settings_app_theme_dark">Dark</string>
     <string name="intent_chooser_open_with">Open with</string>
+    <string name="javascript_console_unavailable_toast">JavaScript console is not available.</string>
+    <string name="touch_inspector_unavailable_toast">Touch inspector is not available.</string>
 </resources>
+

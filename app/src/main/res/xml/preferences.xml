@@ -1,5 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+  <PreferenceCategory android:title="Network settings">
+    <CheckBoxPreference
+	    android:title="Block network image"
+    	android:key="blockNetworkImage"
+		android:summary="Sets whether the WebView should not load image resources from the network."
+		android:defaultValue="false">
+	</CheckBoxPreference>
+    <CheckBoxPreference
+	    android:title="Block network loads"
+    	android:key="blockNetworkLoads"
+		android:summary="Sets whether the WebView should not load resources from the network."
+		android:defaultValue="false">
+	</CheckBoxPreference>
+	<ListPreference
+		android:title="Cache mode"
+		android:key="cacheMode"
+		android:summary="Overrides the way the cache is used."
+		android:defaultValue="LOAD_DEFAULT"
+		android:entries="@array/cache_mode_entries"
+		android:entryValues="@array/cache_mode_values" >
+	</ListPreference>
+	<ListPreference
+		android:title="User agent"
+		android:key="userAgent"
+		android:summary="Sets the WebView's user-agent string."
+		android:defaultValue="default"
+		android:entries="@array/user_agent_entries"
+		android:entryValues="@array/user_agent_values" >
+	</ListPreference>
+	<EditTextPreference
+		android:enabled="false"
+		android:title="Custom user agent"
+		android:key="customUserAgent" >
+	</EditTextPreference>
+  </PreferenceCategory>
+  <PreferenceCategory android:title="JavaScript settings">
+    <CheckBoxPreference
+	    android:title="JavaScript"
+    	android:key="enableJavascript"
+		android:summary="JavaScript allows websites to run programs (scripts) on the device."
+		android:defaultValue="true">
+	</CheckBoxPreference>
+	<CheckBoxPreference
+		android:title="Allow opening windows automatically"
+		android:key="allowOpeningWindowsAutomatically"
+		android:summary="Tells JavaScript to open windows automatically. This applies to the JavaScript function window.open()."
+		android:defaultValue="false" >
+	</CheckBoxPreference>
+  </PreferenceCategory>
   <PreferenceCategory android:title="Appearance">
     <ListPreference
 		android:defaultValue="follow_system"

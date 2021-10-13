@@ -32,6 +32,7 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.webkit.WebSettings;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
 	private List<String> networkLogs = new ArrayList<String>();
 	
 	private WebView webView;
+	private WebSettings webSettings;
 	
 	private ArrayAdapter<String> arrayAdapter;
 	
@@ -69,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
 	private DrawerLayout mainDrawer;
 	
 	private MenuItem clearLogsButton;
+	private MenuItem touchInspectorItem;
+	private MenuItem jsConsoleItem;
 	
 	private View homeScreenView;
 	
@@ -80,7 +84,52 @@ public class MainActivity extends AppCompatActivity {
 		public void onSharedPreferenceChanged(final SharedPreferences settings, final String key) {
 			if (key.equals("appTheme") || key.equals("textInputStyle")) {
 				recreate();
+			} else if (key.equals("enableJavascript")) {
+				final boolean enableJavascript = settings.getBoolean("enableJavascript", true);
+				webSettings.setJavaScriptEnabled(enableJavascript);
+				
+				if (enableJavascript) {
+					jsConsoleItem.setEnabled(true);
+					touchInspectorItem.setEnabled(true);
+				} else {
+					jsConsoleItem.setEnabled(false);
+					touchInspectorItem.setEnabled(false);
+				}
+			} else if (key.equals("allowOpeningWindowsAutomatically")) {
+				final boolean allowOpeningWindowsAutomatically = settings.getBoolean("allowOpeningWindowsAutomatically", false);
+				webSettings.setJavaScriptCanOpenWindowsAutomatically(allowOpeningWindowsAutomatically);
+			} else if (key.equals("blockNetworkImage")) {
+				final boolean blockNetworkImage = settings.getBoolean("blockNetworkImage", false);
+				webSettings.setBlockNetworkImage(blockNetworkImage);
+			} else if (key.equals("blockNetworkLoads")) {
+				final boolean blockNetworkLoads = settings.getBoolean("blockNetworkLoads", false);
+				webSettings.setBlockNetworkLoads(blockNetworkLoads);
+			} else if (key.equals("cacheMode")) {
+				final String cacheMode = settings.getString("cacheMode", "LOAD_DEFAULT");
+				
+				if (cacheMode.equals("LOAD_CACHE_ELSE_NETWORK")) {
+					webSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+				} else if (cacheMode.equals("LOAD_NO_CACHE")) {
+					webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+				} else if (cacheMode.equals("LOAD_CACHE_ONLY")) {
+					webSettings.setCacheMode(WebSettings.LOAD_CACHE_ONLY);
+				} else {
+					webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
+				}
+			} else if (key.equals("userAgent")) {
+				final String userAgent = settings.getString("userAgent", "default");
+				
+				if (userAgent.equals("custom")) {
+					final String customUserAgent = settings.getString("customUserAgent", "");
+					webSettings.setUserAgentString(customUserAgent);
+				} else if (userAgent.equals("default")) {
+					webSettings.setUserAgentString(null);
+				} else {
+					webSettings.setUserAgentString(userAgent);
+				}
 			}
+				
+			
 		}
 	};
 	
@@ -254,8 +303,42 @@ public class MainActivity extends AppCompatActivity {
 		
 		// Web View stuff
 		webView = (WebView) findViewById(R.id.web_view);
+		webSettings = webView.getSettings();
 		
-		webView.getSettings().setJavaScriptEnabled(true);
+		final boolean enableJavascript = settings.getBoolean("enableJavascript", true);
+		webSettings.setJavaScriptEnabled(enableJavascript);
+		
+		final boolean allowOpeningWindowsAutomatically = settings.getBoolean("allowOpeningWindowsAutomatically", false);
+		webSettings.setJavaScriptCanOpenWindowsAutomatically(allowOpeningWindowsAutomatically);
+		
+		final boolean blockNetworkImage = settings.getBoolean("blockNetworkImage", false);
+		webSettings.setBlockNetworkImage(blockNetworkImage);
+		
+		final boolean blockNetworkLoads = settings.getBoolean("blockNetworkLoads", false);
+		webSettings.setBlockNetworkLoads(blockNetworkLoads);
+		
+		final String cacheMode = settings.getString("cacheMode", "LOAD_DEFAULT");
+		
+		if (cacheMode.equals("LOAD_CACHE_ELSE_NETWORK")) {
+			webSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+		} else if (cacheMode.equals("LOAD_NO_CACHE")) {
+			webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+		} else if (cacheMode.equals("LOAD_CACHE_ONLY")) {
+			webSettings.setCacheMode(WebSettings.LOAD_CACHE_ONLY);
+		} else {
+			webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
+		}
+		
+		final String userAgent = settings.getString("userAgent", "default");
+		
+		if (userAgent.equals("custom")) {
+			final String customUserAgent = settings.getString("customUserAgent", "");
+			webSettings.setUserAgentString(customUserAgent);
+		} else if (userAgent.equals("default")) {
+			webSettings.setUserAgentString(null);
+		} else {
+			webSettings.setUserAgentString(userAgent);
+		}
 		
 		webView.setWebContentsDebuggingEnabled(true);
 		
@@ -351,6 +434,17 @@ public class MainActivity extends AppCompatActivity {
 		clearLogsButton = menu.findItem(R.id.menu_clear);
 		clearLogsButton.setVisible(false);
 		
+		// "Touch inspector" item
+		touchInspectorItem = menu.findItem(R.id.menu_touchinspect);
+		
+		// "JavaScript console" item
+		jsConsoleItem = menu.findItem(R.id.menu_jslog);
+		
+		if (!webSettings.getJavaScriptEnabled()) {
+			jsConsoleItem.setEnabled(false);
+			touchInspectorItem.setEnabled(false);
+		}
+		
 		// URL input
 		urlInputView = (SearchView) urlInput.getActionView();
 		urlInputView.setQueryHint(getString(R.string.url_input_hint));
@@ -409,8 +503,6 @@ public class MainActivity extends AppCompatActivity {
 				return true;
 			case R.id.menu_settings:
 				final Intent settingsIntent = new Intent(this, SettingsActivity.class);
-				settingsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				settingsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				startActivity(settingsIntent);
 				return true;
 			case R.id.menu_exit:

@@ -1,8 +1,8 @@
 <resources>
     <string-array name="app_theme_entries">
-        <item>@string/settings_app_theme_follow_system</item>
-        <item>@string/settings_app_theme_light</item>
-        <item>@string/settings_app_theme_dark</item>
+        <item>Follow system</item>
+        <item>Light</item>
+        <item>Dark</item>
     </string-array>
     <string-array name="app_theme_values">
         <item>follow_system</item>
@@ -10,11 +10,59 @@
         <item>dark</item>
     </string-array>
     <string-array name="text_input_style_entries">
-        <item>@string/settings_text_input_style_square</item>
-        <item>@string/settings_text_input_style_rounded</item>
+        <item>Square</item>
+        <item>Rounded</item>
     </string-array>
     <string-array name="text_input_style_values">
         <item>square</item>
         <item>round</item>
+    </string-array>
+    <string-array name="cache_mode_entries">
+        <item>Default</item>
+        <item>Load from cache when available</item>
+        <item>No cache</item>
+        <item>Load from cache only</item>
+    </string-array>
+    <string-array name="cache_mode_values">
+        <item>LOAD_DEFAULT</item>
+        <item>LOAD_CACHE_ELSE_NETWORK</item>
+        <item>LOAD_NO_CACHE</item>
+        <item>LOAD_CACHE_ONLY</item>
+    </string-array>
+    <string-array name="user_agent_entries">
+        <item>WebView on Android (default)</item>
+        <item>Chrome on Windows</item>
+        <item>Chrome on macOS</item>
+        <item>Chrome on Linux</item>
+        <item>Chrome on iOS</item>
+        <item>Chrome on Android</item>
+        <item>Firefox on Windows</item>
+        <item>Firefox on macOS</item>
+        <item>Firefox on Linux</item>
+        <item>Firefox on iOS</item>
+        <item>Firefox on Android</item>
+        <item>Safari on macOS</item>
+        <item>Safari on iOS</item>
+        <item>Safari on iPad</item>
+        <item>Safari on iPod</item>
+        <item>Custom</item>
+    </string-array>
+    <string-array name="user_agent_values">
+        <item>default</item>
+        <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36</item>
+        <item>Mozilla/5.0 (Macintosh; Intel Mac OS X 11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36</item>
+        <item>Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36</item>
+        <item>Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/94.0.4606.76 Mobile/15E148 Safari/604.1</item>
+        <item>Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.85 Mobile Safari/537.36</item>
+        <item>Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101 Firefox/93.0</item>
+        <item>Mozilla/5.0 (Macintosh; Intel Mac OS X 11.6; rv:93.0) Gecko/20100101 Firefox/93.0</item>
+        <item>Mozilla/5.0 (X11; Linux i686; rv:93.0) Gecko/20100101 Firefox/93.0</item>
+        <item>Mozilla/5.0 (iPhone; CPU iPhone OS 11_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) FxiOS/38.0 Mobile/15E148 Safari/605.1.15</item>
+        <item>Mozilla/5.0 (Android 12; Mobile; rv:68.0) Gecko/68.0 Firefox/93.0</item>
+        <item>Mozilla/5.0 (Macintosh; Intel Mac OS X 11_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Safari/605.1.15</item>
+        <item>Mozilla/5.0 (iPhone; CPU iPhone OS 15_0_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/604.1</item>
+        <item>Mozilla/5.0 (iPad; CPU OS 15_0_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/604.1</item>
+        <item>Mozilla/5.0 (iPod touch; CPU iPhone 15_0_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/604.1</item>
+        <item>custom</item>
     </string-array>
 </resources>
