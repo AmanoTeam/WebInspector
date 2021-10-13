@@ -52,7 +52,7 @@ import com.amanoteam.webinspector.SettingsActivity;
 
 public class MainActivity extends AppCompatActivity {
 	
-	private AppCompatTextView xhrLogs;
+	private AppCompatTextView jsConsoleLogs;
 	
 	private NavigationView xhrNavigationView;
 	private NavigationView networkLogsNavigationView;
@@ -184,9 +184,17 @@ public class MainActivity extends AppCompatActivity {
 				public boolean onKey(final View view, int keyCode, final KeyEvent keyEvent) {
 					if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
 						
-						webView.evaluateJavascript(jsConsoleInput.getText().toString(), null);
+						final String jsExpression = jsConsoleInput.getText().toString();
+						
+						if (jsExpression.startsWith("console.")) {
+							webView.evaluateJavascript(jsExpression, null);
+						} else {
+							final String modifiedJsExpression = String.format("%s%s%s", "console.log(", jsExpression.replaceAll(";*$",""), ");");
+							webView.evaluateJavascript(modifiedJsExpression, null);
+						}
 						
 						jsConsoleInput.setText("");
+						
 						return true;
 					}
 					return false;
@@ -194,8 +202,8 @@ public class MainActivity extends AppCompatActivity {
 			}
 		);
 		
-		// "XML HTTP Request logs" stuff
-		xhrLogs = (AppCompatTextView) findViewById(R.id.xhr_logs_list);
+		// "JavaScript console" stuff
+		jsConsoleLogs = (AppCompatTextView) findViewById(R.id.xhr_logs_list);
 		
 		xhrNavigationView = (NavigationView) findViewById(R.id.xhr_logs_navigation);
 		
@@ -291,7 +299,13 @@ public class MainActivity extends AppCompatActivity {
 		webView.setWebChromeClient(new WebChromeClient() {
 				@Override
 				public boolean onConsoleMessage(final ConsoleMessage consoleMessage) {
-					xhrLogs.append(consoleMessage.message() + "\n");
+					final String text = consoleMessage.message();
+					final String separator = "\n--------------------\n";
+					
+					final String consoleMessageText = String.format("%s%s", text, separator);
+					
+					jsConsoleLogs.append(consoleMessageText);
+					
 					return false;
 				}
 			}
@@ -387,8 +401,8 @@ public class MainActivity extends AppCompatActivity {
 				return true;
 			case R.id.menu_clear:
 				if (mainDrawer.isDrawerOpen(Gravity.RIGHT)) {
-					// XHR logs
-					xhrLogs.setText("");
+					// JavaScript console logs
+					jsConsoleLogs.setText("");
 				} else if (mainDrawer.isDrawerOpen(Gravity.LEFT)) {
 					// Network logs
 					networkLogs.clear();
@@ -408,7 +422,7 @@ public class MainActivity extends AppCompatActivity {
 			webView.post(new Runnable() {
 					@Override
 					public void run() {
-						xhrLogs.append(String.format("REQ: %s\nARG: %s\nRESP: %s\n--------------------\n",url,arg, content));
+						jsConsoleLogs.append(String.format("REQ: %s\nARG: %s\nRESP: %s\n--------------------\n",url,arg, content));
 					}
 				});
 		}
