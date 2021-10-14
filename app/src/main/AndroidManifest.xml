@@ -10,7 +10,10 @@
     <application
         android:allowBackup="true"
         android:label="@string/app_name"
-        android:theme="@style/LigthTheme" >	
+        android:theme="@style/LigthTheme" >
+        <meta-data
+			android:name="android.webkit.WebView.MetricsOptOut"
+			android:value="true" />
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
