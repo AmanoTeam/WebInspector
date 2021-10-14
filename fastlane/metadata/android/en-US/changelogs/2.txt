@@ -1,0 +1,2 @@
+* Fix touch inspector not changing page source
+* Add dark theme

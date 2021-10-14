@@ -1,0 +1,6 @@
+Web Inspector is an Android app that allows you to inspect and modify web pages.
+
+Features:
+* View & edit HTML pages
+* Inspect XHR/Ajax requests
+* JavaScript console

@@ -1,0 +1,4 @@
+* Drop support for Android versions bellow Lollipop
+* Migrate to AndroidX
+* Refactor codebase
+* Replace deprecated methods/calls
