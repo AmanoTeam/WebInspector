@@ -2,6 +2,13 @@ package com.amanoteam.webinspector;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.InputStream;
+import java.io.BufferedReader;
+import java.lang.StringBuilder;
+import java.lang.StringBuilder;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import android.app.UiModeManager;
 import android.content.ClipData;
@@ -11,6 +18,7 @@ import android.content.Intent;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
@@ -385,11 +393,7 @@ public class MainActivity extends AppCompatActivity {
 				@Override
 				public void onPageFinished(final WebView webView, final String url) {
 					setTitle(webView.getTitle());
-					
-					webView.evaluateJavascript("function injek3(){window.hasdir=1;window.dir=function(n){var r=[];for(var t in n)'function'==typeof n[t]&&r.push(t);return r}};if(window.hasdir!=1){injek3();}", null);
-					webView.evaluateJavascript("function injek2(){window.touchblock=0,window.dummy1=1,document.addEventListener('click',function(n){if(1==window.touchblock){n.preventDefault();n.stopPropagation();var t=document.elementFromPoint(n.clientX,n.clientY);window.ganti=function(n){t.outerHTML=n},window.gantiparent=function(n){t.parentElement.outerHTML=n},webInpectorJavaScriptInterface.showTouchInspector(t.parentElement.outerHTML, t.outerHTML)}},!0)}1!=window.dummy1&&injek2();", null);
-					webView.evaluateJavascript("function injek(){window.hasovrde=1;var e=XMLHttpRequest.prototype.open;XMLHttpRequest.prototype.open=function(ee,nn,aa){this.addEventListener('load',function(){webInpectorJavaScriptInterface.logXhrRequest(this.responseText, nn, JSON.stringify(arguments))}),e.apply(this,arguments)}};if(window.hasovrde!=1){injek();}", null);
-					
+					evaluateFromAssets("touch_inspector.js");
 					super.onPageFinished(webView, url);
 				}
 				
@@ -491,7 +495,7 @@ public class MainActivity extends AppCompatActivity {
 	public boolean onOptionsItemSelected(final MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.menu_touchinspect:
-				webView.evaluateJavascript("window.touchblock = !window.touchblock;setTimeout(function() {webInpectorJavaScriptInterface.showTouchInspectorState(window.touchblock)}, 100);", null);
+				webView.evaluateJavascript("toggleTouchInpector();", null);
 				return true;
 			case R.id.menu_jslog:
 				mainDrawer.closeDrawer(Gravity.LEFT);
@@ -528,17 +532,6 @@ public class MainActivity extends AppCompatActivity {
 		
 		@JavascriptInterface
 		@SuppressWarnings("unused")
-		public void logXhrRequest(final String content, final String url, final String arg) {
-			webView.post(new Runnable() {
-					@Override
-					public void run() {
-						jsConsoleLogs.append(String.format("REQ: %s\nARG: %s\nRESP: %s\n--------------------\n", url, arg, content));
-					}
-				});
-		}
-		
-		@JavascriptInterface
-		@SuppressWarnings("unused")
 		public void showTouchInspector(final String contentParent, final String content) {
 			webView.post(new Runnable() {
 					@Override
@@ -569,7 +562,7 @@ public class MainActivity extends AppCompatActivity {
 						alertDialogBuilder.setPositiveButton(R.string.touch_inspector_save_button, new DialogInterface.OnClickListener() {
 								@Override
 								public void onClick(DialogInterface p1, int p2) {
-									webView.loadUrl("javascript:window.ganti" + ((boolean) sourceCodeEditor.getTag() ? "parent": "") + "('" + sourceCodeEditor.getText().toString() + "');", null);
+									webView.loadUrl("javascript:window.setOuterHTML" + ((boolean) sourceCodeEditor.getTag() ? "parent": "") + "('" + sourceCodeEditor.getText().toString() + "');", null);
 								}
 							}
 						);
@@ -605,5 +598,32 @@ public class MainActivity extends AppCompatActivity {
 
 		}
 	}
+	
+	public void evaluateFromAssets(final String file) {
+		
+		// Assets stuff
+		final AssetManager assetManager = getAssets();
+		
+		final StringBuilder stringBuilder = new StringBuilder();
+		
+		try {
+			final InputStream inputStream = assetManager.open(file);
+			final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8.name()));
+			
+			String string;
+			
+			while ((string = bufferedReader.readLine()) != null)
+				stringBuilder.append(string);
+			
+			inputStream.close();
+		} catch (IOException e) {
+			// I hate Java because it force us to handle exceptions we don't want to handle
+		}
+		
+		final String expression = stringBuilder.toString();
+		
+		webView.evaluateJavascript(expression, null);
+	}
+	
 	
 }
