@@ -342,7 +342,7 @@ public class MainActivity extends AppCompatActivity {
 		
 		webView.setWebContentsDebuggingEnabled(true);
 		
-		webView.addJavascriptInterface(new MyJavaScriptInterface(), "jsInterface");
+		webView.addJavascriptInterface(new MyJavaScriptInterface(), "webInpectorJavaScriptInterface");
 		
 		webView.setWebViewClient(new WebViewClient() {
 				@Override
@@ -387,8 +387,8 @@ public class MainActivity extends AppCompatActivity {
 					setTitle(webView.getTitle());
 					
 					webView.evaluateJavascript("function injek3(){window.hasdir=1;window.dir=function(n){var r=[];for(var t in n)'function'==typeof n[t]&&r.push(t);return r}};if(window.hasdir!=1){injek3();}", null);
-					webView.evaluateJavascript("function injek2(){window.touchblock=0,window.dummy1=1,document.addEventListener('click',function(n){if(1==window.touchblock){n.preventDefault();n.stopPropagation();var t=document.elementFromPoint(n.clientX,n.clientY);window.ganti=function(n){t.outerHTML=n},window.gantiparent=function(n){t.parentElement.outerHTML=n},jsInterface.print(t.parentElement.outerHTML, t.outerHTML)}},!0)}1!=window.dummy1&&injek2();", null);
-					webView.evaluateJavascript("function injek(){window.hasovrde=1;var e=XMLHttpRequest.prototype.open;XMLHttpRequest.prototype.open=function(ee,nn,aa){this.addEventListener('load',function(){jsInterface.log(this.responseText, nn, JSON.stringify(arguments))}),e.apply(this,arguments)}};if(window.hasovrde!=1){injek();}", null);
+					webView.evaluateJavascript("function injek2(){window.touchblock=0,window.dummy1=1,document.addEventListener('click',function(n){if(1==window.touchblock){n.preventDefault();n.stopPropagation();var t=document.elementFromPoint(n.clientX,n.clientY);window.ganti=function(n){t.outerHTML=n},window.gantiparent=function(n){t.parentElement.outerHTML=n},webInpectorJavaScriptInterface.showTouchInspector(t.parentElement.outerHTML, t.outerHTML)}},!0)}1!=window.dummy1&&injek2();", null);
+					webView.evaluateJavascript("function injek(){window.hasovrde=1;var e=XMLHttpRequest.prototype.open;XMLHttpRequest.prototype.open=function(ee,nn,aa){this.addEventListener('load',function(){webInpectorJavaScriptInterface.logXhrRequest(this.responseText, nn, JSON.stringify(arguments))}),e.apply(this,arguments)}};if(window.hasovrde!=1){injek();}", null);
 					
 					super.onPageFinished(webView, url);
 				}
@@ -491,7 +491,7 @@ public class MainActivity extends AppCompatActivity {
 	public boolean onOptionsItemSelected(final MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.menu_touchinspect:
-				webView.evaluateJavascript("window.touchblock = !window.touchblock;setTimeout(function() {jsInterface.blocktoggle(window.touchblock)}, 100);", null);
+				webView.evaluateJavascript("window.touchblock = !window.touchblock;setTimeout(function() {webInpectorJavaScriptInterface.showTouchInspectorState(window.touchblock)}, 100);", null);
 				return true;
 			case R.id.menu_jslog:
 				mainDrawer.closeDrawer(Gravity.LEFT);
@@ -525,19 +525,21 @@ public class MainActivity extends AppCompatActivity {
 	
 	// js interface
 	class MyJavaScriptInterface {
+		
 		@JavascriptInterface
 		@SuppressWarnings("unused")
-		public void log(final String content, final String url, final String arg) {
+		public void logXhrRequest(final String content, final String url, final String arg) {
 			webView.post(new Runnable() {
 					@Override
 					public void run() {
-						jsConsoleLogs.append(String.format("REQ: %s\nARG: %s\nRESP: %s\n--------------------\n",url,arg, content));
+						jsConsoleLogs.append(String.format("REQ: %s\nARG: %s\nRESP: %s\n--------------------\n", url, arg, content));
 					}
 				});
 		}
+		
 		@JavascriptInterface
 		@SuppressWarnings("unused")
-		public void print(final String contentParent, final String content) {
+		public void showTouchInspector(final String contentParent, final String content) {
 			webView.post(new Runnable() {
 					@Override
 					public void run() {
@@ -590,9 +592,10 @@ public class MainActivity extends AppCompatActivity {
 				}
 			);
 		}
+		
 		@JavascriptInterface
 		@SuppressWarnings("unused")
-		public void blocktoggle(final String value) {
+		public void showTouchInspectorState(final String value) {
 			webView.post(new Runnable() {
 					@Override
 					public void run() {
