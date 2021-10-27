@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
 	private DrawerLayout mainDrawer;
 	
 	private MenuItem clearLogsButton;
-	private MenuItem touchInspectorItem;
+	private MenuItem SourceInspectorItem;
 	private MenuItem jsConsoleItem;
 	
 	private View homeScreenView;
@@ -98,10 +98,10 @@ public class MainActivity extends AppCompatActivity {
 				
 				if (enableJavascript) {
 					jsConsoleItem.setEnabled(true);
-					touchInspectorItem.setEnabled(true);
+					SourceInspectorItem.setEnabled(true);
 				} else {
 					jsConsoleItem.setEnabled(false);
-					touchInspectorItem.setEnabled(false);
+					SourceInspectorItem.setEnabled(false);
 				}
 			} else if (key.equals("allowOpeningWindowsAutomatically")) {
 				final boolean allowOpeningWindowsAutomatically = settings.getBoolean("allowOpeningWindowsAutomatically", false);
@@ -394,7 +394,7 @@ public class MainActivity extends AppCompatActivity {
 				public void onPageFinished(final WebView webView, final String url) {
 					setTitle(webView.getTitle());
 					
-					evaluateFromAssets("touch_inspector.js");
+					evaluateFromAssets("source_inspector.js");
 					evaluateFromAssets("selector_inspector.js");
 					
 					super.onPageFinished(webView, url);
@@ -442,14 +442,14 @@ public class MainActivity extends AppCompatActivity {
 		clearLogsButton.setVisible(false);
 		
 		// "Touch inspector" item
-		touchInspectorItem = menu.findItem(R.id.menu_touchinspect);
+		SourceInspectorItem = menu.findItem(R.id.menu_source_inspector);
 		
 		// "JavaScript console" item
 		jsConsoleItem = menu.findItem(R.id.menu_jslog);
 		
 		if (!webSettings.getJavaScriptEnabled()) {
 			jsConsoleItem.setEnabled(false);
-			touchInspectorItem.setEnabled(false);
+			SourceInspectorItem.setEnabled(false);
 		}
 		
 		// URL input
@@ -497,8 +497,8 @@ public class MainActivity extends AppCompatActivity {
 	@Override
 	public boolean onOptionsItemSelected(final MenuItem item) {
 		switch (item.getItemId()) {
-			case R.id.menu_touchinspect:
-				webView.evaluateJavascript("toggleTouchInpector();", null);
+			case R.id.menu_source_inspector:
+				webView.evaluateJavascript("toggleSourceInspector();", null);
 				return true;
 			case R.id.menu_selectorsinspect:
 				webView.evaluateJavascript("toggleSelectors();", null);
@@ -538,7 +538,7 @@ public class MainActivity extends AppCompatActivity {
 		
 		@JavascriptInterface
 		@SuppressWarnings("unused")
-		public void showTouchInspector(final String contentParent, final String content) {
+		public void showSourceInspector(final String contentParent, final String content) {
 			webView.post(new Runnable() {
 					@Override
 					public void run() {
@@ -563,17 +563,17 @@ public class MainActivity extends AppCompatActivity {
 						sourceCodeEditor.setTag(false);
 						
 						final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
-						alertDialogBuilder.setTitle(R.string.touch_inspector_title);
+						alertDialogBuilder.setTitle(R.string.source_inspector_title);
 						alertDialogBuilder.setView(sourceView);
-						alertDialogBuilder.setPositiveButton(R.string.touch_inspector_save_button, new DialogInterface.OnClickListener() {
+						alertDialogBuilder.setPositiveButton(R.string.source_inspector_save_button, new DialogInterface.OnClickListener() {
 								@Override
 								public void onClick(final DialogInterface dialog, final int which) {
 									webView.loadUrl("javascript:window.setOuterHTML" + ((boolean) sourceCodeEditor.getTag() ? "parent": "") + "('" + sourceCodeEditor.getText().toString() + "');", null);
 								}
 							}
 						);
-						alertDialogBuilder.setNeutralButton(R.string.touch_inspector_parent_button, null);
-						alertDialogBuilder.setNegativeButton(R.string.touch_inspector_close_button, null);
+						alertDialogBuilder.setNeutralButton(R.string.source_inspector_parent_button, null);
+						alertDialogBuilder.setNegativeButton(R.string.close_button, null);
 						
 						final AlertDialog alertDialog = alertDialogBuilder.show();
 						
@@ -582,7 +582,7 @@ public class MainActivity extends AppCompatActivity {
 								@Override
 								public void onClick(final View view) {
 									sourceCodeEditor.setText((boolean) sourceCodeEditor.getTag() ? content: contentParent);
-									neutralButton.setText((boolean) sourceCodeEditor.getTag() ? R.string.touch_inspector_parent_button: R.string.touch_inspector_inner_button);
+									neutralButton.setText((boolean) sourceCodeEditor.getTag() ? R.string.source_inspector_parent_button: R.string.source_inspector_inner_button);
 									sourceCodeEditor.setTag(!(boolean) sourceCodeEditor.getTag());
 								}
 							}
@@ -620,7 +620,7 @@ public class MainActivity extends AppCompatActivity {
 						
 						final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
 						
-						alertDialogBuilder.setTitle(R.string.touch_inspector_title);
+						alertDialogBuilder.setTitle(R.string.source_inspector_title);
 						alertDialogBuilder.setView(sourceView);
 						alertDialogBuilder.setPositiveButton(R.string.selectors_copy_selector_button, new DialogInterface.OnClickListener() {
 								@Override
@@ -633,7 +633,7 @@ public class MainActivity extends AppCompatActivity {
 							}
 						);
 						
-						alertDialogBuilder.setNegativeButton(R.string.touch_inspector_close_button, null);
+						alertDialogBuilder.setNegativeButton(R.string.close_button, null);
 						
 						alertDialogBuilder.setNeutralButton(R.string.selectors_copy_xpath_button, new DialogInterface.OnClickListener() {
 								@Override
@@ -657,11 +657,11 @@ public class MainActivity extends AppCompatActivity {
 		
 		@JavascriptInterface
 		@SuppressWarnings("unused")
-		public void showTouchInspectorState(final String value) {
+		public void showSourceInspectorState(final String value) {
 			webView.post(new Runnable() {
 					@Override
 					public void run() {
-						Toast.makeText(getApplicationContext(), value.equals("true") ? R.string.touch_inspector_enabled: R.string.touch_inspector_disabled, Toast.LENGTH_SHORT).show();
+						Toast.makeText(getApplicationContext(), value.equals("true") ? R.string.source_inspector_enabled: R.string.source_inspector_disabled, Toast.LENGTH_SHORT).show();
 					}
 				});
 		}

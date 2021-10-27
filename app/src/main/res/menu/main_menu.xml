@@ -14,8 +14,8 @@
 		app:showAsAction="always"
 	/>
 	<item
-        android:id="@+id/menu_touchinspect"
-        android:title="@string/touch_inspector"/>
+        android:id="@+id/menu_source_inspector"
+        android:title="@string/source_inspector"/>
 	<item
         android:id="@+id/menu_selectorsinspect"
         android:title="@string/selectors_inspector"/>
