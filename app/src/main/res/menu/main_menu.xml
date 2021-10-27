@@ -16,6 +16,9 @@
 	<item
         android:id="@+id/menu_touchinspect"
         android:title="@string/touch_inspector"/>
+	<item
+        android:id="@+id/menu_selectorsinspect"
+        android:title="@string/selectors_inspector"/>
     <item
         android:id="@+id/menu_jslog"
         android:title="@string/javascript_logs"/>

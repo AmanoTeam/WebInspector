@@ -4,6 +4,7 @@
     <string name="go_to_web_address">Go to web address</string>
     <string name="clear_logs">Clear logs</string>
     <string name="touch_inspector">Touch inspector</string>
+    <string name="selectors_inspector">Selectors inspector</string>
     <string name="javascript_logs">JavaScript console</string>
     <string name="network_logs">Network logs</string>
     <string name="settings">Settings</string>
@@ -16,14 +17,16 @@
     <string name="touch_inspector_close_button">Close</string>
     <string name="touch_inspector_parent_button">Parent</string>
     <string name="touch_inspector_inner_button">Inner</string>
-    <string name="touch_inspector_enabled_toast">Touch inspector enabled</string>
-    <string name="touch_inspector_disabled_toast">Touch inspector disabled</string>
-    <string name="copied_to_clipboard_toast">Copied to clipboard</string>
+    <string name="selectors_copy_xpath_button">Get XPath</string>
+    <string name="selectors_copy_selector_button">Get selector</string>   
+    <string name="touch_inspector_enabled">Touch inspector enabled</string>
+    <string name="touch_inspector_disabled">Touch inspector disabled</string>
+    <string name="selectors_enabled">Selector inspector enabled</string>
+    <string name="selectors_disabled">Selector inspector disabled</string>
+    <string name="copied_to_clipboard">Copied %1$s to clipboard</string>
     <string name="home_screen_tip">Click &gt; on Toolbar to Input URL</string>
     <string name="settings_theme">Theme</string>
     <string name="settings_text_input_style">Text input style</string>
     <string name="intent_chooser_open_with">Open with</string>
-    <string name="javascript_console_unavailable_toast">JavaScript console is not available.</string>
-    <string name="touch_inspector_unavailable_toast">Touch inspector is not available.</string>
 </resources>
 

@@ -211,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
 					final ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 			        clipboard.setPrimaryClip(ClipData.newPlainText("URL", urlToCopy));
 					
-					Toast.makeText(getApplicationContext(), R.string.copied_to_clipboard_toast, Toast.LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), getString(R.string.copied_to_clipboard, urlToCopy), Toast.LENGTH_SHORT).show();
 					
 					adapterView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
 					return true;
@@ -393,7 +393,10 @@ public class MainActivity extends AppCompatActivity {
 				@Override
 				public void onPageFinished(final WebView webView, final String url) {
 					setTitle(webView.getTitle());
+					
 					evaluateFromAssets("touch_inspector.js");
+					evaluateFromAssets("selector_inspector.js");
+					
 					super.onPageFinished(webView, url);
 				}
 				
@@ -497,6 +500,9 @@ public class MainActivity extends AppCompatActivity {
 			case R.id.menu_touchinspect:
 				webView.evaluateJavascript("toggleTouchInpector();", null);
 				return true;
+			case R.id.menu_selectorsinspect:
+				webView.evaluateJavascript("toggleSelectors();", null);
+				return true;
 			case R.id.menu_jslog:
 				mainDrawer.closeDrawer(Gravity.LEFT);
 				mainDrawer.openDrawer(Gravity.RIGHT);
@@ -561,7 +567,7 @@ public class MainActivity extends AppCompatActivity {
 						alertDialogBuilder.setView(sourceView);
 						alertDialogBuilder.setPositiveButton(R.string.touch_inspector_save_button, new DialogInterface.OnClickListener() {
 								@Override
-								public void onClick(DialogInterface p1, int p2) {
+								public void onClick(final DialogInterface dialog, final int which) {
 									webView.loadUrl("javascript:window.setOuterHTML" + ((boolean) sourceCodeEditor.getTag() ? "parent": "") + "('" + sourceCodeEditor.getText().toString() + "');", null);
 								}
 							}
@@ -588,15 +594,89 @@ public class MainActivity extends AppCompatActivity {
 		
 		@JavascriptInterface
 		@SuppressWarnings("unused")
+		public void showSelectorsInspector(final String content, final String xpath, final String selector) {
+			webView.post(new Runnable() {
+					@Override
+					public void run() {
+						final LayoutInflater layoutInflater = getLayoutInflater();
+						final View sourceView = layoutInflater.inflate(R.layout.source_code_viewer, null);
+						
+						final AppCompatEditText sourceCodeEditor = (AppCompatEditText) sourceView.findViewById(R.id.source_code_editor_text);
+						
+						if (isDarkMode) {
+							if (textInputStyleIsRoundCorners) {
+								sourceCodeEditor.setBackgroundResource(R.drawable.round_dark_background);
+							} else {
+								sourceCodeEditor.setBackgroundResource(R.drawable.square_dark_background);
+							}
+						} else {
+							if (textInputStyleIsRoundCorners) {
+								sourceCodeEditor.setBackgroundResource(R.drawable.round_light_background);
+							}
+						}
+						
+						sourceCodeEditor.setText(content);
+						sourceCodeEditor.setTag(false);
+						
+						final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
+						
+						alertDialogBuilder.setTitle(R.string.touch_inspector_title);
+						alertDialogBuilder.setView(sourceView);
+						alertDialogBuilder.setPositiveButton(R.string.selectors_copy_selector_button, new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(final DialogInterface dialog, final int which) {
+									final ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+									clipboard.setPrimaryClip(ClipData.newPlainText("CSS selector", selector));
+									
+									Toast.makeText(getApplicationContext(), getString(R.string.copied_to_clipboard, selector), Toast.LENGTH_SHORT).show();
+								}
+							}
+						);
+						
+						alertDialogBuilder.setNegativeButton(R.string.touch_inspector_close_button, null);
+						
+						alertDialogBuilder.setNeutralButton(R.string.selectors_copy_xpath_button, new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(final DialogInterface dialog, final int which) {
+									final ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+									clipboard.setPrimaryClip(ClipData.newPlainText("XPath selector", xpath));
+									
+									Toast.makeText(getApplicationContext(), getString(R.string.copied_to_clipboard, xpath), Toast.LENGTH_SHORT).show();
+									
+									dialog.dismiss();
+								}
+							}
+						);
+						
+						alertDialogBuilder.show();
+						
+					}
+				}
+			);
+		}
+		
+		@JavascriptInterface
+		@SuppressWarnings("unused")
 		public void showTouchInspectorState(final String value) {
 			webView.post(new Runnable() {
 					@Override
 					public void run() {
-						Toast.makeText(getApplicationContext(), value.matches("(1|true)") ? R.string.touch_inspector_enabled_toast: R.string.touch_inspector_disabled_toast, Toast.LENGTH_SHORT).show();
+						Toast.makeText(getApplicationContext(), value.equals("true") ? R.string.touch_inspector_enabled: R.string.touch_inspector_disabled, Toast.LENGTH_SHORT).show();
 					}
 				});
-
 		}
+		
+		@JavascriptInterface
+		@SuppressWarnings("unused")
+		public void showSelectorsState(final String value) {
+			webView.post(new Runnable() {
+					@Override
+					public void run() {
+						Toast.makeText(getApplicationContext(), value.equals("true") ? R.string.selectors_enabled: R.string.selectors_disabled, Toast.LENGTH_SHORT).show();
+					}
+				});
+		}
+	
 	}
 	
 	public void evaluateFromAssets(final String file) {

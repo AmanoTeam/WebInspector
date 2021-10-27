@@ -31,8 +31,12 @@ function toggleTouchInpector() {
 	
 	window.canOpenTouchInspector = !window.canOpenTouchInspector;
 	
+	if (window.canOpenTouchInspector) {
+		window.canOpenSelectors = false;
+	}
+	
 	setTimeout(function() {
-		webInpectorJavaScriptInterface.showTouchInspectorState(window.canOpenTouchInspector)
+		webInpectorJavaScriptInterface.showTouchInspectorState(window.canOpenTouchInspector);
 	}, 100);
 	
 }
