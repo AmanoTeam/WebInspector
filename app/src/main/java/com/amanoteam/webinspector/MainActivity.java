@@ -41,6 +41,7 @@ import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.webkit.WebSettings;
+import android.webkit.ValueCallback;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -79,13 +80,16 @@ public class MainActivity extends AppCompatActivity {
 	private DrawerLayout mainDrawer;
 	
 	private MenuItem clearLogsButton;
-	private MenuItem SourceInspectorItem;
+	private MenuItem sourceInspectorItem;
 	private MenuItem jsConsoleItem;
+	private MenuItem selectorInspectorItem;
+	private MenuItem networkLogsItem;
 	
 	private View homeScreenView;
 	
 	private boolean isDarkMode = false;
 	private boolean textInputStyleIsRoundCorners = false;
+	private boolean isNavigating = false;
 	
 	private final OnSharedPreferenceChangeListener onSharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
 		@Override
@@ -96,12 +100,18 @@ public class MainActivity extends AppCompatActivity {
 				final boolean enableJavascript = settings.getBoolean("enableJavascript", true);
 				webSettings.setJavaScriptEnabled(enableJavascript);
 				
-				if (enableJavascript) {
+				if (enableJavascript && isNavigating) {
 					jsConsoleItem.setEnabled(true);
-					SourceInspectorItem.setEnabled(true);
+					sourceInspectorItem.setEnabled(true);
+					selectorInspectorItem.setEnabled(true);
+					
+					mainDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNDEFINED, jsNavigationView);
 				} else {
 					jsConsoleItem.setEnabled(false);
-					SourceInspectorItem.setEnabled(false);
+					sourceInspectorItem.setEnabled(false);
+					selectorInspectorItem.setEnabled(false);
+					
+					mainDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, jsNavigationView);
 				}
 			} else if (key.equals("allowOpeningWindowsAutomatically")) {
 				final boolean allowOpeningWindowsAutomatically = settings.getBoolean("allowOpeningWindowsAutomatically", false);
@@ -260,7 +270,6 @@ public class MainActivity extends AppCompatActivity {
 			}
 		);
 		
-		// "JavaScript console" stuff
 		jsConsoleLogs = (AppCompatTextView) findViewById(R.id.javascript_logs_list);
 		
 		jsNavigationView = (NavigationView) findViewById(R.id.javascript_logs_navigation);
@@ -308,6 +317,9 @@ public class MainActivity extends AppCompatActivity {
 				
 			}
 		);
+		
+		mainDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, jsNavigationView);
+		mainDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, networkLogsNavigationView);
 		
 		// Web View stuff
 		webView = (WebView) findViewById(R.id.web_view);
@@ -442,15 +454,21 @@ public class MainActivity extends AppCompatActivity {
 		clearLogsButton.setVisible(false);
 		
 		// "Touch inspector" item
-		SourceInspectorItem = menu.findItem(R.id.menu_source_inspector);
+		sourceInspectorItem = menu.findItem(R.id.menu_source_inspector);
+		
+		// "XPath/CSS locator" item
+		selectorInspectorItem = menu.findItem(R.id.menu_selector_inspector);
 		
 		// "JavaScript console" item
 		jsConsoleItem = menu.findItem(R.id.menu_jslog);
 		
-		if (!webSettings.getJavaScriptEnabled()) {
-			jsConsoleItem.setEnabled(false);
-			SourceInspectorItem.setEnabled(false);
-		}
+		// "Network logs" item
+		networkLogsItem = menu.findItem(R.id.menu_netlog);
+		networkLogsItem.setEnabled(false);
+		
+		jsConsoleItem.setEnabled(false);
+		sourceInspectorItem.setEnabled(false);
+		selectorInspectorItem.setEnabled(false);
 		
 		// URL input
 		urlInputView = (SearchView) urlInput.getActionView();
@@ -472,6 +490,18 @@ public class MainActivity extends AppCompatActivity {
 						webView.loadUrl(url);
 					} else {
 						webView.loadUrl(String.format("http://%s", url));
+					}
+					
+					if (!isNavigating && webSettings.getJavaScriptEnabled()) {
+						jsConsoleItem.setEnabled(true);
+						sourceInspectorItem.setEnabled(true);
+						selectorInspectorItem.setEnabled(true);
+						networkLogsItem.setEnabled(true);
+						
+						mainDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNDEFINED, networkLogsNavigationView);
+						mainDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNDEFINED, jsNavigationView);
+						
+						isNavigating = true;
 					}
 					
 					urlInput.collapseActionView();
@@ -498,10 +528,28 @@ public class MainActivity extends AppCompatActivity {
 	public boolean onOptionsItemSelected(final MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.menu_source_inspector:
-				webView.evaluateJavascript("toggleSourceInspector();", null);
+				webView.evaluateJavascript("toggleSourceInspector();", new ValueCallback<String>() {
+						@Override
+						public void onReceiveValue(final String value) {
+							if (value.equals("true")) {
+								return;
+							}
+							
+							Toast.makeText(getApplicationContext(), R.string.javascript_feature_not_initialized, Toast.LENGTH_SHORT).show();
+						}
+					});
 				return true;
-			case R.id.menu_selectorsinspect:
-				webView.evaluateJavascript("toggleSelectors();", null);
+			case R.id.menu_selector_inspector:
+				webView.evaluateJavascript("toggleSelectors();", new ValueCallback<String>() {
+						@Override
+						public void onReceiveValue(final String value) {
+							if (value.equals("true")) {
+								return;
+							}
+							
+							Toast.makeText(getApplicationContext(), R.string.javascript_feature_not_initialized, Toast.LENGTH_SHORT).show();
+						}
+					});
 				return true;
 			case R.id.menu_jslog:
 				mainDrawer.closeDrawer(Gravity.LEFT);

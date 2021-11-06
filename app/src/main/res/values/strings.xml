@@ -28,5 +28,5 @@
     <string name="settings_theme">Theme</string>
     <string name="settings_text_input_style">Text input style</string>
     <string name="intent_chooser_open_with">Open with</string>
+    <string name="javascript_feature_not_initialized">This feature cannot be initialized. Make sure you are actually navigating on a web page.</string>
 </resources>
-

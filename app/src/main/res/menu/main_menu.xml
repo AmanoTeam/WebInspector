@@ -17,7 +17,7 @@
         android:id="@+id/menu_source_inspector"
         android:title="@string/source_inspector"/>
 	<item
-        android:id="@+id/menu_selectorsinspect"
+        android:id="@+id/menu_selector_inspector"
         android:title="@string/selectors_inspector"/>
     <item
         android:id="@+id/menu_jslog"

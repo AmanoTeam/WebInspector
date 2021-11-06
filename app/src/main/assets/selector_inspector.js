@@ -91,6 +91,8 @@ function toggleSelectors() {
 		webInpectorJavaScriptInterface.showSelectorsState(window.canOpenSelectors);
 	}, 100);
 	
+	return true;
+	
 }
 
 if (!window.isSelectorsEnabled) {

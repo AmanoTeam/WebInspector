@@ -39,6 +39,8 @@ function toggleSourceInspector() {
 		webInpectorJavaScriptInterface.showSourceInspectorState(window.canOpenSourceInspector);
 	}, 100);
 	
+	return true;
+	
 }
 
 if (!window.isSourceInspectorEnabled) {
