@@ -10,12 +10,14 @@ function injectSelectors() {
 		
 		var touchPoint = document.elementFromPoint(event.clientX, event.clientY);
 		
+		touchPoint.style.border = "1px solid red";
+		
 		var target = event.target;
 		
 		var path = getPathTo(target);
 		var selector = getSelectorTo(target);
 		
-		webInpectorJavaScriptInterface.showSelectorsInspector(touchPoint.outerHTML, path, selector);
+		webInpectorJavaScriptInterface.showXPathCssLocator(touchPoint.outerHTML, path, selector);
 	
 	});
 	

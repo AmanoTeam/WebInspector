@@ -10,6 +10,17 @@ function injectSourceInspector() {
 		
 		var touchPoint = document.elementFromPoint(event.clientX, event.clientY);
 		
+		if (touchPoint.parentElement == null) {
+			var parentOuterHTML = null;
+		} else {
+			var parentOuterHTML = touchPoint.parentElement.outerHTML;
+		}
+		
+		touchPoint.style.border = "1px solid red";
+		
+		var target = event.target;
+		var selector = getSelectorTo(target);
+		
 		window.setOuterHTML = function(source) {
 			touchPoint.outerHTML = source;
 		};
@@ -18,7 +29,7 @@ function injectSourceInspector() {
 			touchPoint.parentElement.outerHTML = source;
 		};
 		
-		webInpectorJavaScriptInterface.showSourceInspector(touchPoint.parentElement.outerHTML, touchPoint.outerHTML);
+		webInpectorJavaScriptInterface.showSourceInspector(parentOuterHTML, touchPoint.outerHTML, selector);
 	
    });
    

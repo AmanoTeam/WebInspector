@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import android.app.UiModeManager;
+import android.text.TextUtils;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.DialogInterface;
@@ -56,6 +57,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.preference.PreferenceManager;
+import androidx.annotation.Nullable;
 import com.google.android.material.navigation.NavigationView;
 
 import com.amanoteam.webinspector.R;
@@ -586,7 +588,7 @@ public class MainActivity extends AppCompatActivity {
 		
 		@JavascriptInterface
 		@SuppressWarnings("unused")
-		public void showSourceInspector(final String contentParent, final String content) {
+		public void showSourceInspector(final String contentParent, final String content, final String elementSelector) {
 			webView.post(new Runnable() {
 					@Override
 					public void run() {
@@ -616,16 +618,38 @@ public class MainActivity extends AppCompatActivity {
 						alertDialogBuilder.setPositiveButton(R.string.source_inspector_save_button, new DialogInterface.OnClickListener() {
 								@Override
 								public void onClick(final DialogInterface dialog, final int which) {
-									webView.loadUrl("javascript:window.setOuterHTML" + ((boolean) sourceCodeEditor.getTag() ? "parent": "") + "('" + sourceCodeEditor.getText().toString() + "');", null);
+									if ((boolean) sourceCodeEditor.getTag()){
+										final String expression = String.format("window.setOuterHTMLparent(`%s`);", sourceCodeEditor.getText().toString());
+										webView.evaluateJavascript(expression, null);
+									} else {
+										final String expression = String.format("window.setOuterHTML(`%s`);", sourceCodeEditor.getText().toString());
+										webView.evaluateJavascript(expression, null);
+									}
+									
+									webView.evaluateJavascript(String.format("document.querySelector('%s').style.border = '';", elementSelector), null);
 								}
 							}
 						);
 						alertDialogBuilder.setNeutralButton(R.string.source_inspector_parent_button, null);
-						alertDialogBuilder.setNegativeButton(R.string.close_button, null);
+						alertDialogBuilder.setNegativeButton(R.string.close_button, new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(final DialogInterface dialog, final int which) {
+									webView.evaluateJavascript(String.format("document.querySelector('%s').style.border = '';", elementSelector), null);
+								}
+							}
+						);
+						alertDialogBuilder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+								@Override
+								public void onCancel(final DialogInterface dialog) {
+									webView.evaluateJavascript(String.format("document.querySelector('%s').style.border = '';", elementSelector), null);
+								}
+							}
+						);
 						
 						final AlertDialog alertDialog = alertDialogBuilder.show();
 						
 						final Button neutralButton = alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
+						
 						neutralButton.setOnClickListener(new View.OnClickListener() {
 								@Override
 								public void onClick(final View view) {
@@ -635,6 +659,18 @@ public class MainActivity extends AppCompatActivity {
 								}
 							}
 						);
+						
+						if (TextUtils.isEmpty(contentParent)) {
+							sourceCodeEditor.setFocusable(false);
+							sourceCodeEditor.setClickable(false);
+							
+							neutralButton.setEnabled(false);
+							
+							final Button positiveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+							positiveButton.setEnabled(false);
+						}
+						
+						
 					}
 				}
 			);
@@ -642,14 +678,18 @@ public class MainActivity extends AppCompatActivity {
 		
 		@JavascriptInterface
 		@SuppressWarnings("unused")
-		public void showSelectorsInspector(final String content, final String xpath, final String selector) {
+		public void showXPathCssLocator(final String content, final String xpath, final String selector) {
 			webView.post(new Runnable() {
 					@Override
 					public void run() {
+						
 						final LayoutInflater layoutInflater = getLayoutInflater();
 						final View sourceView = layoutInflater.inflate(R.layout.source_code_viewer, null);
 						
 						final AppCompatEditText sourceCodeEditor = (AppCompatEditText) sourceView.findViewById(R.id.source_code_editor_text);
+						
+						sourceCodeEditor.setFocusable(false);
+						sourceCodeEditor.setClickable(false);
 						
 						if (isDarkMode) {
 							if (textInputStyleIsRoundCorners) {
@@ -677,11 +717,19 @@ public class MainActivity extends AppCompatActivity {
 									clipboard.setPrimaryClip(ClipData.newPlainText("CSS selector", selector));
 									
 									Toast.makeText(getApplicationContext(), getString(R.string.copied_to_clipboard, selector), Toast.LENGTH_SHORT).show();
+									
+									webView.evaluateJavascript(String.format("document.querySelector('%s').style.border = '';", selector), null);
 								}
 							}
 						);
 						
-						alertDialogBuilder.setNegativeButton(R.string.close_button, null);
+						alertDialogBuilder.setNegativeButton(R.string.close_button, new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(final DialogInterface dialog, final int which) {
+									webView.evaluateJavascript(String.format("document.querySelector('%s').style.border = '';", selector), null);
+								}
+							}
+						);
 						
 						alertDialogBuilder.setNeutralButton(R.string.selectors_copy_xpath_button, new DialogInterface.OnClickListener() {
 								@Override
@@ -692,6 +740,16 @@ public class MainActivity extends AppCompatActivity {
 									Toast.makeText(getApplicationContext(), getString(R.string.copied_to_clipboard, xpath), Toast.LENGTH_SHORT).show();
 									
 									dialog.dismiss();
+									
+									webView.evaluateJavascript(String.format("document.querySelector('%s').style.border = '';", selector), null);
+								}
+							}
+						);
+						
+						alertDialogBuilder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+								@Override
+								public void onCancel(final DialogInterface dialog) {
+									webView.evaluateJavascript(String.format("document.querySelector('%s').style.border = '';", selector), null);
 								}
 							}
 						);
@@ -749,7 +807,6 @@ public class MainActivity extends AppCompatActivity {
 		}
 		
 		final String expression = stringBuilder.toString();
-		
 		webView.evaluateJavascript(expression, null);
 	}
 	
