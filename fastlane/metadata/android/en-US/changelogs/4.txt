@@ -1,0 +1,2 @@
+* Add XPath/CSS locator
+* Improve error handling
